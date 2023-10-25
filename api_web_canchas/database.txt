@@ -10,7 +10,7 @@ CREATE TABLE usuarios (
   email VARCHAR(60) NOT NULL,
   contrasenia VARCHAR(45) NOT NULL,
   telefono VARCHAR(45) NOT NULL,
-  rol VARCHAR(15) NOT NULL
+  rol VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE clubes (
