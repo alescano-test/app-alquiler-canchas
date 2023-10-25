@@ -1,6 +1,18 @@
 import express from "express";
 import { db } from "./db.js";
 
+/*
+CREATE TABLE usuarios (
+  id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  apellido VARCHAR(45) NOT NULL,
+  email VARCHAR(60) NOT NULL,
+  contrasenia VARCHAR(45) NOT NULL,
+  telefono VARCHAR(45) NOT NULL,
+  rol VARCHAR(15) NOT NULL
+);
+*/
+
 export const usuariosRouter = express.Router();
 // Agregar nuevo usuario
 usuariosRouter
