@@ -1,25 +1,26 @@
 import express from "express";
-import {db} from "./db.js"
+import { db } from "./db.js";
 
 export const usuariosRouter = express.Router();
 // Agregar nuevo usuario
 usuariosRouter
   .post("/", async (req, res) => {
     const nuevoUsuario = req.body.usuario;
-    await db.execute(
-      "insert into usuarios (nombre, apellido, telefono, passw, email) VALUES (:nombre, :apellido, :telefono, :passw, :email)",
+    const [rows] = await db.execute(
+      "insert into usuarios (nombre, apellido, email, contrasenia, telefono, rol) values (:nombre, :apellido, :email, :contrasenia, :telefono, :rol)",
       {
         nombre: nuevoUsuario.nombre,
         apellido: nuevoUsuario.apellido,
-        telefono: nuevoUsuario.telefono,
-        passw: nuevoUsuario.passw,
         email: nuevoUsuario.email,
+        contrasenia: nuevoUsuario.contrasenia,
+        telefono: nuevoUsuario.telefono,
+        rol: nuevoUsuario.rol,
       }
     );
-    res.status(201).send({ mensaje: "Nuevo usuario agregado" });
+    res.status(201).send({ mensaje: "Usuario agregado" });
   })
 
-//Consultar usuario por id
+  //Consultar usuario por id
   .get("/:id", async (req, res) => {
     const id = req.params.id;
     const [rows, fields] = await db.execute(
@@ -32,11 +33,9 @@ usuariosRouter
       res.status(404).send("Usuario no encontrado");
     }
   })
- //Consultar todos los usuarios
+  //Consultar todos los usuarios
   .get("/", async (req, res) => {
-    const [rows, fields] = await db.execute(
-      "SELECT * FROM USUARIOS"
-    );
+    const [rows, fields] = await db.execute("SELECT * FROM USUARIOS");
     if (rows.length > 0) {
       res.status(200).send(rows);
     } else {
@@ -46,16 +45,17 @@ usuariosRouter
   //Modificar usuarios por id
   .put("/:id", async (req, res) => {
     const id = req.params.id;
-    const nuevosDatosUsuario = req.body.nuevosDatos;
+    const nuevosDatosUsuario = req.body.usuarioEdit;
     await db.execute(
-      "update usuarios set nombre=:nombre, apellido=:apellido, telefono=:telefono, passw=:passw, email=:email WHERE id_usuario=:id",
+      "update usuarios set nombre=:nombre, apellido=:apellido, email=:email, contrasenia=:contrasenia, telefono=:telefono, rol=:rol WHERE id_usuario=:id",
       {
-        id,
+        id: id,
         nombre: nuevosDatosUsuario.nombre,
         apellido: nuevosDatosUsuario.apellido,
-        telefono: nuevosDatosUsuario.telefono,
-        passw: nuevosDatosUsuario.passw,
         email: nuevosDatosUsuario.email,
+        contrasenia: nuevosDatosUsuario.contrasenia,
+        telefono: nuevosDatosUsuario.telefono,
+        rol: nuevosDatosUsuario.rol,
       }
     );
     res.status(200).send("Usuario modificado");
@@ -63,5 +63,5 @@ usuariosRouter
   .delete("/:id", async (req, res) => {
     const id = req.params.id;
     await db.execute("delete from usuarios where id_usuario=:id", { id });
-    res.status(200);
+    res.status(200).send({ mensaje: "Usuario eliminado" });
   });
