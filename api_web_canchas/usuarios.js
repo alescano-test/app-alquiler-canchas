@@ -72,6 +72,7 @@ usuariosRouter
     );
     res.status(200).send("Usuario modificado");
   })
+  //Eliminar usuario por id
   .delete("/:id", async (req, res) => {
     const id = req.params.id;
     await db.execute("delete from usuarios where id_usuario=:id", { id });

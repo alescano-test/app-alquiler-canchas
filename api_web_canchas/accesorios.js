@@ -16,7 +16,7 @@ export const accesoriosRouter = express.Router();
 accesoriosRouter.post("/", async (req, res) => {
     const nuevoAccesorio = req.body.accesorio;
     const [rows] = await db.execute(
-     "insert into accesorios (nombre, tipo_deporte, precio, estado) .values (:nombre, :tipo_deporte, :precio, :estado)",
+     "insert into accesorios (nombre, tipo_deporte, precio, estado) values (:nombre, :tipo_deporte, :precio, :estado)",
         {
           nombre: nuevoAccesorio.nombre,
           tipo_deporte: nuevoAccesorio.tipo_deporte,
@@ -32,7 +32,7 @@ accesoriosRouter.get("/", async (req, res) => {
     if(rows.length > 0) {
         res.status(200).send(rows);
     } else {
-        res.status(404).send("Usuario no encontrado");
+        res.status(404).send("Accesorio no encontrado");
     }
 
 });
