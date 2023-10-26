@@ -14,4 +14,15 @@ CREATE TABLE canchas (
 );
 */
 
+
 export const canchasRouter = express.Router();
+
+canchasRouter.post("/", (req, res) => {});
+
+canchasRouter.get("/", (req, res) => {});
+
+canchasRouter.get("/:id", (req, res) => {});
+
+canchasRouter.put("/:id", (req, res) => {});
+
+canchasRouter.delete("/:id", (req, res) => {});

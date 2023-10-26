@@ -10,3 +10,13 @@ CREATE TABLE clubes (
 */
 
 export const clubesRouter = express.Router();
+
+clubesRouter.post("/", (req, res) => {});
+
+clubesRouter.get("/", (req, res) => {});
+
+clubesRouter.get("/:id", (req, res) => {});
+
+clubesRouter.put("/:id", (req, res) => {});
+
+clubesRouter.delete("/:id", (req, res) => {});

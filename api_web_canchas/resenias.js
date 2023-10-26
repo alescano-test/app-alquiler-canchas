@@ -12,15 +12,15 @@ CREATE TABLE resenias (
   );
 */
 
-
-
-
-
-
-
-
-
-
-
 export const reseniasRouter = express.Router();
+
+reseniasRouter.post("/", (req, res) => {});
+
+reseniasRouter.get("/", (req, res) => {});
+
+reseniasRouter.get("/:id", (req, res) => {});
+
+reseniasRouter.put("/:id", (req, res) => {});
+
+reseniasRouter.delete("/:id", (req, res) => {});
 

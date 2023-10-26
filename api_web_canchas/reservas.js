@@ -19,3 +19,12 @@ CREATE TABLE reservas (
 
 export const reservasRouter = express.Router();
 
+reservasRouter.post("/", (req, res) => {});
+
+reservasRouter.get("/", (req, res) => {});
+
+reservasRouter.get("/:id", (req, res) => {});
+
+reservasRouter.put("/:id", (req, res) => {});
+
+reservasRouter.delete("/:id", (req, res) => {});

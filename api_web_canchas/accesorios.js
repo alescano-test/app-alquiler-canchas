@@ -12,3 +12,13 @@ CREATE TABLE accesorios (
 */
 
 export const accesoriosRouter = express.Router();
+
+accesoriosRouter.post("/", (req, res) => {});
+
+accesoriosRouter.get("/", (req, res) => {});
+
+accesoriosRouter.get("/:id", (req, res) => {});
+
+accesoriosRouter.put("/:id", (req, res) => {});
+
+accesoriosRouter.delete("/:id", (req, res) => {});

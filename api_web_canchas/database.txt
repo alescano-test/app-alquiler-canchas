@@ -1,8 +1,11 @@
 /* Creación del schema  */
-CREATE SCHEMA alquiler_canchas;
-USE alquiler_canchas;
+CREATE SCHEMA sistema_reservas;
+
+USE sistema_reservas;
 
 /* Creación de tablas */
+
+/*1er*/
 CREATE TABLE usuarios (
   id_usuario INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(45) NOT NULL,
@@ -10,16 +13,16 @@ CREATE TABLE usuarios (
   email VARCHAR(60) NOT NULL,
   contrasenia VARCHAR(45) NOT NULL,
   telefono VARCHAR(45) NOT NULL,
-  rol VARCHAR(20) NOT NULL
+  rol VARCHAR(15) NOT NULL
 );
-
+/*2do*/
 CREATE TABLE clubes (
   id_club INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(45) NOT NULL,
   direccion VARCHAR(100) NOT NULL,
   telefono VARCHAR(25) NOT NULL
 );
-
+/*3ro*/
 CREATE TABLE canchas (
   id_cancha INT PRIMARY KEY AUTO_INCREMENT,
   club_id INT NOT NULL,
@@ -31,7 +34,16 @@ CREATE TABLE canchas (
   CONSTRAINT fk_clubes_canchas -- Relación entre `canchas` y `clubes`
   FOREIGN KEY (club_id) REFERENCES clubes (id_club)
 );
-
+/*4to*/
+CREATE TABLE accesorios (
+  id_accesorio INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(60) NOT NULL,
+  tipo_deporte VARCHAR(60) NOT NULL,
+  precio INT NOT NULL,
+  estado VARCHAR(45),
+  FOREIGN KEY (tipo_deporte) REFERENCES canchas (tipo_deporte)
+);
+/*5to*/
 CREATE TABLE reservas (
   id_reserva INT PRIMARY KEY AUTO_INCREMENT,
   usuario_id INT NOT NULL,
@@ -45,21 +57,12 @@ CREATE TABLE reservas (
   CONSTRAINT fk_canchas_reservas -- Relación entre `reservas` y `canchas`
   FOREIGN KEY (cancha_id) REFERENCES canchas (id_cancha)
 );
-
+/*6to*/
 CREATE TABLE resenias (
-  id_resenia INT PRIMARY KEY AUTO_INCREMENT,
-  reserva_id INT NOT NULL,
-  comentario VARCHAR(255) NOT NULL,
-  calificacion INT NOT NULL,
-  CONSTRAINT fk_reservas_resenias -- Relación entre `reseñas` y `reservas`
-  FOREIGN KEY (reserva_id) REFERENCES reservas (id_reserva)
-);
-
-CREATE TABLE accesorios (
-  id_accesorio INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(60) NOT NULL,
-  tipo_deporte VARCHAR(60) NOT NULL,
-  precio INT NOT NULL,
-  estado VARCHAR(45),
-  FOREIGN KEY (tipo_deporte) REFERENCES canchas (tipo_deporte)
-);
+    id_resenia INT PRIMARY KEY AUTO_INCREMENT,
+    reserva_id INT NOT NULL,
+    comentario VARCHAR(255) NOT NULL,
+    calificacion INT NOT NULL,
+    CONSTRAINT fk_reservas_resenias -- Relación entre `reseñas` y `reservas`
+    FOREIGN KEY (reserva_id) REFERENCES reservas (id_reserva)
+)
