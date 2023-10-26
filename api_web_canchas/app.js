@@ -19,7 +19,7 @@ app.use("/accesorios", accesoriosRouter);
 app.use("/reservas", reservasRouter);
 app.use("/resenias", reseniasRouter);
 
-//Aplicación escuchando peticiones en puero :3000
+//Aplicación escuchando peticiones en puerto :3000
 app.listen(3000, () => {
   console.log("API en funcionamiento");
 });

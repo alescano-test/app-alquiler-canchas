@@ -1,5 +1,5 @@
 import express from "express";
-
+import {db} from "./db.js"
 /*
 CREATE TABLE accesorios (
   id_accesorio INT PRIMARY KEY AUTO_INCREMENT,
@@ -13,9 +13,29 @@ CREATE TABLE accesorios (
 
 export const accesoriosRouter = express.Router();
 
-accesoriosRouter.post("/", (req, res) => {});
+accesoriosRouter.post("/", async (req, res) => {
+    const nuevoAccesorio = req.body.accesorio;
+    const [rows] = await db.execute(
+     "insert into accesorios (nombre, tipo_deporte, precio, estado) .values (:nombre, :tipo_deporte, :precio, :estado)",
+        {
+          nombre: nuevoAccesorio.nombre,
+          tipo_deporte: nuevoAccesorio.tipo_deporte,
+          precio: nuevoAccesorio.precio,
+          estado: nuevoAccesorio.estado,
+        }
+    );
+    res.status(201).send({ mensaje: "Accesorio agregado" })
+});
 
-accesoriosRouter.get("/", (req, res) => {});
+accesoriosRouter.get("/", async (req, res) => {
+    const[rows]= await db.execute("SELECT * FROM accesorios");
+    if(rows.length > 0) {
+        res.status(200).send(rows);
+    } else {
+        res.status(404).send("Usuario no encontrado");
+    }
+
+});
 
 accesoriosRouter.get("/:id", (req, res) => {});
 
