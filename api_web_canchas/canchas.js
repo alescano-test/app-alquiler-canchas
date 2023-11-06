@@ -14,7 +14,6 @@ CREATE TABLE canchas (
   FOREIGN KEY (club_id) REFERENCES clubes (id_club)
 );
 */
-
 export const canchasRouter = express.Router();
 
 canchasRouter.post("/", async (req, res) => {
@@ -32,14 +31,40 @@ canchasRouter.post("/", async (req, res) => {
   res.status(201).send({ mensaje: "Cancha creada con éxito!" });
 });
 
-canchasRouter.get("/:id", async(req, res)=> {
+canchasRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
-  const [rows] = await db.execute("SELECT * FROM canchas WHERE id_cancha =:id", {id});
-  res.status(200).send(rows[0])
-})
+  const [rows] = await db.execute(
+    "SELECT * FROM canchas WHERE id_cancha =:id",
+    { id }
+  );
+  res.status(200).send(rows[0]);
+});
 
-canchasRouter.get("/", async(req, res)=> {
+canchasRouter.get("/", async (req, res) => {
   const id = req.params.id;
   const [rows] = await db.execute("SELECT * FROM canchas");
-  res.status(200).send(rows)
-})
+  res.status(200).send(rows);
+});
+
+canchasRouter.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const nuevosDatosCancha = req.body.nuevosDatosCancha;
+  await db.execute(
+    "UPDATE canchas SET club_id=:club_id, tipo_deporte=:tipo_deporte, dimensiones=:dimensiones, precio=:precio, suelo=:suelo WHERE id_cancha= :id",
+    {
+      id: id,
+      club_id: nuevosDatosCancha.club_id,
+      tipo_deporte: nuevosDatosCancha.tipo_deporte,
+      dimensiones: nuevosDatosCancha.dimensiones,
+      precio: nuevosDatosCancha.precio,
+      suelo: nuevosDatosCancha.suelo,
+    }
+  );
+  res.status(200).send("Cancha modificad");
+});
+
+canchasRouter.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  await db.execute("delete from canchas where id_cancha= :id", { id });
+  res.status(200).send({ mensaje: "Cancha eliminada" });
+});
