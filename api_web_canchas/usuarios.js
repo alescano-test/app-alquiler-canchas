@@ -1,6 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
-
+import {body, param, query, validationResult} from "express-validator"
 /*
 CREATE TABLE usuarios (
   id_usuario INT PRIMARY KEY AUTO_INCREMENT,
@@ -16,7 +16,9 @@ CREATE TABLE usuarios (
 export const usuariosRouter = express.Router();
 // Agregar nuevo usuario
 usuariosRouter
-  .post("/", async (req, res) => {
+  .post("/",
+   body("nombre").isAlpha().isLength({min: 1, max:50}),
+  async (req, res) => {
     const nuevoUsuario = req.body.usuario;
     const [rows] = await db.execute(
       "insert into usuarios (nombre, apellido, email, contrasenia, telefono, rol) values (:nombre, :apellido, :email, :contrasenia, :telefono, :rol)",
