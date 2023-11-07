@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import { SignIn } from "./SingInPage";
+import {SignIn}  from "./SignInPage";
+import {HomePage} from "./HomePage"
 import { Layout } from "./Layout";
 
 export default function App() {
@@ -8,7 +9,7 @@ export default function App() {
     <h1>Hola</h1>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index />
+          <Route index element={<HomePage />}/>
           <Route path="/iniciar-sesion" element={<SignIn />} />
         </Route>
       </Routes>
