@@ -1,7 +1,3 @@
-api_web_canchas/package-lock.json
-api_web_canchas/package.json
 api_web_canchas/node_modules
-ui_web_canchas/package-lock.json
-ui_web_canchas/package.json
 ui_web_canchas/node_modules
 api_web_canchas/.env
