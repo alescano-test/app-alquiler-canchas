@@ -47,12 +47,12 @@ usuariosRouter.post(
       }
     );
     res.status(201).send("usuario agregado");
-    }
+  }
 );
 
 //* Consultar usuario por id - Validado
 usuariosRouter
-  .get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
+  .get("/:id", param("id").isInt({ min: 1 }).withMessage("Id no existe"), async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
@@ -82,29 +82,42 @@ usuariosRouter
 //*---------------------------------------------------------------------
 
 //!Modificar usuarios por id - Validar
-usuariosRouter.put("/:id", async (req, res) => {
-  const id = req.params.id;
-  const nuevosDatosUsuario = req.body.usuarioEdit;
-  await db.execute(
-    "update usuarios set nombre=:nombre, apellido=:apellido, email=:email, contrasenia=:contrasenia, telefono=:telefono, rol=:rol WHERE id_usuario=:id",
-    {
-      id: id,
-      nombre: nuevosDatosUsuario.nombre,
-      apellido: nuevosDatosUsuario.apellido,
-      email: nuevosDatosUsuario.email,
-      contrasenia: nuevosDatosUsuario.contrasenia,
-      telefono: nuevosDatosUsuario.telefono,
-      rol: nuevosDatosUsuario.rol,
+usuariosRouter.put(
+  "/:id",
+  param("id").isNumeric({ min: 1 }).isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+      return;
     }
-  );
-  res.status(200).send("Usuario modificado");
-});
+    const { id } = req.params;
+    const { nombre, apellido, email, contrasenia, telefono, rol } = req.body;
+    await db.execute(
+      "update usuarios set nombre=:nombre, apellido=:apellido, email=:email, contrasenia=:contrasenia, telefono=:telefono, rol=:rol WHERE id_usuario=:id",
+      {
+        id: id,
+        nombre: nombre,
+        apellido: apellido,
+        email: email,
+        contrasenia: contrasenia,
+        telefono: telefono,
+        rol: rol,
+      }
+    );
+    res.status(200).send("Usuario modificado");
+  }
+);
 
 //!---------------------------------------------------------------------
 
 //Eliminar usuario por id
-usuariosRouter.delete("/:id", async (req, res) => {
-  const id = req.params.id;
-  await db.execute("delete from usuarios where id_usuario=:id", { id });
-  res.status(200).send({ mensaje: "Usuario eliminado" });
-});
+usuariosRouter.delete(
+  "/:id",
+  param("id").isNumeric({ min: 1 }).isLength({ min: 1 }),
+  async (req, res) => {
+    const id = req.params.id;
+    await db.execute("delete from usuarios where id_usuario=:id", { id });
+    res.status(200).send({ mensaje: "Usuario eliminado" });
+  }
+);
