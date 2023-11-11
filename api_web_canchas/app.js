@@ -7,10 +7,12 @@ import { accesoriosRouter } from "./accesorios.js";
 import { reservasRouter } from "./reservas.js";
 import { reseniasRouter } from "./resenias.js";
 
+
 //Crear aplicación backend Express
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 
 app.use("/usuarios", usuariosRouter);
 app.use("/clubes", clubesRouter);
