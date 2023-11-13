@@ -1,5 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
+import {body, query, param} from "express-validator"
 
 /*
 CREATE TABLE canchas (
@@ -16,7 +17,8 @@ CREATE TABLE canchas (
 */
 export const canchasRouter = express.Router();
 
-canchasRouter.post("/", async (req, res) => {
+canchasRouter.post("/", body(""),async (req, res) => {
+
   const nuevaCancha = req.body.nuevaCancha;
   await db.execute(
     "INSERT INTO canchas (club_id, tipo_deporte, dimensiones, precio, suelo) VALUES (:club_id, :tipo_deporte, :dimensiones, :precio, :suelo)",

@@ -1,5 +1,6 @@
 import express from "express";
 import {db} from "./db.js"
+
 /*
 CREATE TABLE accesorios (
   id_accesorio INT PRIMARY KEY AUTO_INCREMENT,
@@ -13,7 +14,7 @@ CREATE TABLE accesorios (
 
 export const accesoriosRouter = express.Router();
 
-accesoriosRouter.post("/", async (req, res) => {
+accesoriosRouter.post("/",async (req, res) => {
     const nuevoAccesorio = req.body.accesorio;
     const [rows] = await db.execute(
      "insert into accesorios (nombre, tipo_deporte, precio, estado) values (:nombre, :tipo_deporte, :precio, :estado)",
