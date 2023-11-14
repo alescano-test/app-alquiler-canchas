@@ -9,15 +9,36 @@ export const NavBar = () => {
                 <a className="text-lg font-bold text-gray-50">CanchasGo!</a>
             </div> 
             <div className="flex justify-end flex-1 px-2">
-                <div className="flex items-stretch">
-                <a className="btn btn-ghost rounded-btn text-gray-50">Iniciar Sesión</a>
                 <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost rounded-btn text-gray-50">Registrate</label>
-                    <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-                        <li><a>Jugador</a></li> 
-                        <li><a>Club</a></li>
-                    </ul>
-                </div>
+                    <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+                    <div className="drawer-content">
+                        <label htmlFor="my-drawer-4" className="btn btn-primary">Iniciar sesión</label>
+                    </div> 
+                    <div className="drawer-side">
+                        <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+                        <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                            <form className="card-body">
+                                <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Email</span>
+                                </label>
+                                <input type="email" placeholder="email" className="input input-bordered" required />
+                                </div>
+                                <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Contraseña</span>
+                                </label>
+                                <input type="password" placeholder="password" className="input input-bordered" required />
+                                <label className="label">
+                                    <a href="#" className="label-text-alt link link-hover">Olvidaste la contraseña?</a>
+                                </label>
+                                </div>
+                                <div className="form-control mt-6">
+                                <button className="btn btn-primary">Ingresar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
