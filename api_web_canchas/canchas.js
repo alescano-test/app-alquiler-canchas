@@ -17,13 +17,13 @@ CREATE TABLE canchas (
 */
 export const canchasRouter = express.Router();
 
-canchasRouter.post("/", body(""),async (req, res) => {
+canchasRouter.post("/",async (req, res) => {
 
   const nuevaCancha = req.body.nuevaCancha;
   await db.execute(
     "INSERT INTO canchas (club_id, tipo_deporte, dimensiones, precio, suelo) VALUES (:club_id, :tipo_deporte, :dimensiones, :precio, :suelo)",
     {
-      club_id: nuevaCancha.id_club,
+      club_id: nuevaCancha.club_id,
       tipo_deporte: nuevaCancha.tipo_deporte,
       dimensiones: nuevaCancha.dimensiones,
       precio: nuevaCancha.precio,
