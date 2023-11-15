@@ -1,6 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
-import { body, param } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 
 /*
 CREATE TABLE clubes (
@@ -17,15 +17,15 @@ export const clubesRouter = express.Router();
 clubesRouter.post(
   "/",
   body("nombre")
-    .matches(/^[\p{L}\s]+$/u)
+    .matches(/^[\p{L}\p{N}\s]+$/u)
     .isLength({ min: 1, max: 45 })
     .withMessage("El nombre debe tener entre 1 y 45 caracteres"),
   body("direccion")
-    .matches(/^[\p{L}\s]+$/u)
+    .matches(/^[\p{L}\p{N}\s]+$/u)
     .isLength({ min: 1, max: 100 })
     .withMessage("La dirección debe tener entre 1 y 100 caracteres"),
   body("telefono")
-    .isInt({ min: 10, max: 12 })
+    .isLength({ min: 10, max: 12 })
     .withMessage("El teléfono debe tener entre 10 y 12 caracteres"),
   async (req, res) => {
     const validacion = validationResult(req);
@@ -45,7 +45,7 @@ clubesRouter.post(
   }
 );
 
-clubesRouter.get("/:id", param("id").isIn({ min: 1 }), async (req, res) => {
+clubesRouter.get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
   const validacion = validationResult(req);
   if (!validacion.isEmpty()) {
     //? Si la validación es diferente a vacía
@@ -71,20 +71,38 @@ clubesRouter.get("/", async (req, res) => {
   }
 });
 
-clubesRouter.put("/:id", async (req, res) => {
-  const id = req.params.id;
-  const nuevosDatosClub = req.body.nuevosDatosClub;
-  await db.execute(
-    "update clubes set nombre=:nombre, direccion=:direccion, telefono=:telefono WHERE id_club=:id",
-    {
-      id: id,
-      nombre: nuevosDatosClub.nombre,
-      direccion: nuevosDatosClub.direccion,
-      telefono: nuevosDatosClub.telefono,
+clubesRouter.put(
+  "/:id",
+  body("nombre")
+    .isLength({ min: 1, max: 45 })
+    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .withMessage("El nombre debe tener entre 1 y 45 caracteres"),
+  body("direccion")
+    .matches(/^[\p{L}\p{N}\s,]+$/u)
+    .isLength({ min: 1, max: 100 })
+    .withMessage("La dirección debe tener entre 1 y 100 caracteres"),
+  body("telefono")
+    .isLength({ min: 10, max: 12 })
+    .withMessage("El teléfono debe tener entre 10 y 12 caracteres"),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
     }
-  );
-  res.status(200).send({ mensaje: "Datos del Club modificados." });
-});
+    const { id } = req.params;
+    const { nombre, direccion, telefono } = req.body;
+    await db.execute(
+      "update clubes set nombre=:nombre, direccion=:direccion, telefono=:telefono WHERE id_club=:id",
+      {
+        id: id,
+        nombre: nombre,
+        direccion: direccion,
+        telefono: telefono,
+      }
+    );
+    res.status(200).send({ mensaje: "Datos del Club modificados." });
+  }
+);
 
 clubesRouter.delete("/:id", async (req, res) => {
   const id = req.params.id;

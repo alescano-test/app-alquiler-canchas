@@ -48,7 +48,7 @@ usuariosRouter.post(
     .withMessage(
       "El número debe tener como minimo 10 caractreres y 12 como máximo."
     ),
-  body("rol").isInt({ min: 1 }),
+  body("rol").isLength({ min: 1, max: 15 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
@@ -136,14 +136,14 @@ usuariosRouter.put(
     .withMessage(
       "El número debe tener como minimo 10 caractreres y 12 como máximo."
     ),
-  body("rol").isInt({ min: 1 }),
+  body("rol").isLength({ min: 1, max: 15 }),
   async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, email, contrasenia, telefono, rol } = req.body;
     await db.execute(
       "update usuarios set nombre=:nombre, apellido=:apellido, email=:email, contrasenia=:contrasenia, telefono=:telefono, rol=:rol WHERE id_usuario=:id",
       {
-        id_usuario: id,
+        id,
         nombre: nombre,
         apellido: apellido,
         email: email,
@@ -164,5 +164,26 @@ usuariosRouter.delete(
     const { id } = req.params;
     await db.execute("delete from usuarios where id_usuario=:id", { id });
     res.status(200).send({ mensaje: "Usuario eliminado" });
+  }
+);
+
+usuariosRouter.get(
+  "/:id/reserva",
+  param("id").isInt({ min: 1 }).withMessage("ID debe ser numérico"),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+    }
+    const { id } = req.params;
+    const [rows] = await db.execute(
+      "SELECT * FROM reservas WHERE usuario_id = :id",
+      { id }
+    );
+    if (rows.length > 0) {
+      res.status(200).send(rows);
+    } else {
+      res.status(404).send({ mensaje: "Reservas no encontradas" });
+    }
   }
 );

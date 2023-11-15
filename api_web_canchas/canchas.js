@@ -1,6 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
-import {body, query, param} from "express-validator"
+import { body, param, validationResult } from "express-validator";
 
 /*
 CREATE TABLE canchas (
@@ -17,56 +17,96 @@ CREATE TABLE canchas (
 */
 export const canchasRouter = express.Router();
 
-canchasRouter.post("/",async (req, res) => {
-
-  const nuevaCancha = req.body.nuevaCancha;
-  await db.execute(
-    "INSERT INTO canchas (club_id, tipo_deporte, dimensiones, precio, suelo) VALUES (:club_id, :tipo_deporte, :dimensiones, :precio, :suelo)",
-    {
-      club_id: nuevaCancha.club_id,
-      tipo_deporte: nuevaCancha.tipo_deporte,
-      dimensiones: nuevaCancha.dimensiones,
-      precio: nuevaCancha.precio,
-      suelo: nuevaCancha.suelo,
+canchasRouter.post(
+  "/",
+  body("club_id").isInt().isLength({ min: 1 }),
+  body("tipo_deporte")
+    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .isLength({ min: 1, max: 60 }),
+  body("dimensiones")
+    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .isLength({ min: 1, max: 45 }),
+  body("precio").isNumeric({ min: 1, max: 10000 }),
+  body("suelo")
+    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .isLength({ min: 1, max: 60 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
     }
-  );
-  res.status(201).send({ mensaje: "Cancha creada con éxito!" });
-});
+    const { club_id, tipo_deporte, dimensiones, precio, suelo } = req.body;
+    await db.execute(
+      "INSERT INTO canchas (club_id, tipo_deporte, dimensiones, precio, suelo) VALUES (:club_id, :tipo_deporte, :dimensiones, :precio, :suelo)",
+      {
+        club_id: club_id,
+        tipo_deporte: tipo_deporte,
+        dimensiones: dimensiones,
+        precio: precio,
+        suelo: suelo,
+      }
+    );
+    res.status(201).send({ mensaje: "Cancha agregada" });
+  }
+);
 
-canchasRouter.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const [rows] = await db.execute(
-    "SELECT * FROM canchas WHERE id_cancha =:id",
-    { id }
-  );
-  res.status(200).send(rows[0]);
-});
+canchasRouter.get(
+  "/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+    }
+    const { id } = req.params;
+    const [rows] = await db.execute(
+      "SELECT * FROM canchas WHERE id_cancha =:id",
+      { id }
+    );
+    res.status(200).send(rows[0]);
+  }
+);
 
 canchasRouter.get("/", async (req, res) => {
-  const id = req.params.id;
   const [rows] = await db.execute("SELECT * FROM canchas");
   res.status(200).send(rows);
 });
 
-canchasRouter.put("/:id", async (req, res) => {
-  const id = req.params.id;
-  const nuevosDatosCancha = req.body.nuevosDatosCancha;
-  await db.execute(
-    "UPDATE canchas SET club_id=:club_id, tipo_deporte=:tipo_deporte, dimensiones=:dimensiones, precio=:precio, suelo=:suelo WHERE id_cancha= :id",
-    {
-      id: id,
-      club_id: nuevosDatosCancha.club_id,
-      tipo_deporte: nuevosDatosCancha.tipo_deporte,
-      dimensiones: nuevosDatosCancha.dimensiones,
-      precio: nuevosDatosCancha.precio,
-      suelo: nuevosDatosCancha.suelo,
+canchasRouter.put(
+  "/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
     }
-  );
-  res.status(200).send("Cancha modificad");
-});
+    const { id } = req.params;
+    const { club_id, tipo_deporte, dimensiones, precio, suelo } = req.body;
+    await db.execute(
+      "UPDATE canchas SET club_id=:club_id, tipo_deporte=:tipo_deporte, dimensiones=:dimensiones, precio=:precio, suelo=:suelo WHERE id_cancha= :id",
+      {
+        id: id,
+        club_id: club_id,
+        tipo_deporte: tipo_deporte,
+        dimensiones: dimensiones,
+        precio: precio,
+        suelo: suelo,
+      }
+    );
+    res.status(200).send({ mensaje: "Cancha modificada" });
+  }
+);
 
-canchasRouter.delete("/:id", async (req, res) => {
-  const id = req.params.id;
-  await db.execute("delete from canchas where id_cancha= :id", { id });
-  res.status(200).send({ mensaje: "Cancha eliminada" });
-});
+canchasRouter.delete(
+  "/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+    }
+    const { id } = req.params;
+    await db.execute("delete from canchas where id_cancha= :id", { id });
+    res.status(200).send({ mensaje: "Cancha eliminada" });
+  }
+);
