@@ -1,5 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
+import { body, param } from "express-validator";
 
 /*
 CREATE TABLE clubes (
@@ -11,25 +12,49 @@ CREATE TABLE clubes (
 */
 
 export const clubesRouter = express.Router();
-clubesRouter.post("/", async (req, res) => {
-  const club = req.body.nuevoClub;
-  await db.execute(
-    "INSERT INTO clubes (nombre, direccion, telefono) VALUES (:nombre, :direccion, :telefono)",
-    {
-      nombre: club.nombre,
-      direccion: club.direccion,
-      telefono: club.telefono,
-    }
-  );
-  res.status(201).send({ mensaje: "Club agregado" });
-});
 
-clubesRouter.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const [rows] = await db.execute(
-    "SELECT * FROM clubes WHERE ID_CLUB=:id",
-    { id }
-  );
+//? Método POST
+clubesRouter.post(
+  "/",
+  body("nombre")
+    .matches(/^[\p{L}\s]+$/u)
+    .isLength({ min: 1, max: 45 })
+    .withMessage("El nombre debe tener entre 1 y 45 caracteres"),
+  body("direccion")
+    .matches(/^[\p{L}\s]+$/u)
+    .isLength({ min: 1, max: 100 })
+    .withMessage("La dirección debe tener entre 1 y 100 caracteres"),
+  body("telefono")
+    .isInt({ min: 10, max: 12 })
+    .withMessage("El teléfono debe tener entre 10 y 12 caracteres"),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+    }
+    const { nombre, direccion, telefono } = req.body;
+    await db.execute(
+      "INSERT INTO clubes (nombre, direccion, telefono) VALUES (:nombre, :direccion, :telefono)",
+      {
+        nombre: nombre,
+        direccion: direccion,
+        telefono: telefono,
+      }
+    );
+    res.status(201).send({ mensaje: "Club agregado" });
+  }
+);
+
+clubesRouter.get("/:id", param("id").isIn({ min: 1 }), async (req, res) => {
+  const validacion = validationResult(req);
+  if (!validacion.isEmpty()) {
+    //? Si la validación es diferente a vacía
+    res.status(400).send({ errors: validacion.array() });
+  }
+  const { id } = req.params;
+  const [rows] = await db.execute("SELECT * FROM clubes WHERE ID_CLUB=:id", {
+    id,
+  });
   if (rows.length > 0) {
     res.status(200).send(rows[0]);
   } else {
@@ -38,9 +63,7 @@ clubesRouter.get("/:id", async (req, res) => {
 });
 
 clubesRouter.get("/", async (req, res) => {
-  const [rows] = await db.execute(
-    "SELECT * FROM clubes"
-  );
+  const [rows] = await db.execute("SELECT * FROM clubes");
   if (rows.length > 0) {
     res.status(200).send(rows);
   } else {
@@ -48,7 +71,7 @@ clubesRouter.get("/", async (req, res) => {
   }
 });
 
-clubesRouter.put("/:id", async(req, res) => {
+clubesRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
   const nuevosDatosClub = req.body.nuevosDatosClub;
   await db.execute(
@@ -57,10 +80,10 @@ clubesRouter.put("/:id", async(req, res) => {
       id: id,
       nombre: nuevosDatosClub.nombre,
       direccion: nuevosDatosClub.direccion,
-      telefono: nuevosDatosClub.telefono
+      telefono: nuevosDatosClub.telefono,
     }
   );
-  res.status(200).send({"mensaje": "Datos del Club modificados."})
+  res.status(200).send({ mensaje: "Datos del Club modificados." });
 });
 
 clubesRouter.delete("/:id", async (req, res) => {
