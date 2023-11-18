@@ -7,14 +7,14 @@ export default function ListaCanchas() {
   useEffect(() => {
     async function obtenerCanchas() {
       const response = await fetch("http://localhost:3000/canchas");
-      const data = await response.json();
-      setCanchas(data);
+      const dataCancha = await response.json();
+      setCanchas(dataCancha);
     }
     obtenerCanchas();
   }, []);
 
   return (
-    <div>
+    <div className="">
       <ul>
         {canchas.map((cancha) => (
           <li key={cancha.club_id}>
