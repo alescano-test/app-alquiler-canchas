@@ -1,27 +1,38 @@
 /* Creación del schema  */
-CREATE SCHEMA sistema_reservas;
-
-USE sistema_reservas;
+CREATE SCHEMA `sistema_reservas_canchas` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+USE sistema_reservas_canchas;
 
 /* Creación de tablas */
 
 /*1er*/
-CREATE TABLE usuarios (
-  id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(45) NOT NULL,
-  apellido VARCHAR(45) NOT NULL,
-  email VARCHAR(60) NOT NULL,
-  contrasenia VARCHAR(45) NOT NULL,
-  telefono VARCHAR(45) NOT NULL,
-  rol VARCHAR(15) NOT NULL
-);
+CREATE TABLE `personas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(35) NOT NULL,
+  `apellido` varchar(35) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+)
+
 /*2do*/
+CREATE TABLE `cuentas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(25) NOT NULL,
+  `password` varchar(150) NOT NULL,
+  `persona_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `persona_id_UNIQUE` (`persona_id`),
+  CONSTRAINT `fk_cuentas_personas_persona_id` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+)
+
+/*3ro*/
 CREATE TABLE clubes (
   id_club INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(45) NOT NULL,
   direccion VARCHAR(100) NOT NULL,
   telefono VARCHAR(25) NOT NULL
 );
+
 /*3ro*/
 CREATE TABLE canchas (
   id_cancha INT PRIMARY KEY AUTO_INCREMENT,
@@ -34,15 +45,7 @@ CREATE TABLE canchas (
   CONSTRAINT fk_clubes_canchas -- Relación entre `canchas` y `clubes`
   FOREIGN KEY (club_id) REFERENCES clubes (id_club)
 );
-/*4to*/
-CREATE TABLE accesorios (
-  id_accesorio INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(60) NOT NULL,
-  tipo_deporte VARCHAR(60) NOT NULL,
-  precio INT NOT NULL,
-  estado VARCHAR(45),
-  FOREIGN KEY (tipo_deporte) REFERENCES canchas (tipo_deporte)
-);
+
 /*5to*/
 CREATE TABLE reservas (
   id_reserva INT PRIMARY KEY AUTO_INCREMENT,
@@ -57,12 +60,3 @@ CREATE TABLE reservas (
   CONSTRAINT fk_canchas_reservas -- Relación entre `reservas` y `canchas`
   FOREIGN KEY (cancha_id) REFERENCES canchas (id_cancha)
 );
-/*6to*/
-CREATE TABLE resenias (
-    id_resenia INT PRIMARY KEY AUTO_INCREMENT,
-    reserva_id INT NOT NULL,
-    comentario VARCHAR(255) NOT NULL,
-    calificacion INT NOT NULL,
-    CONSTRAINT fk_reservas_resenias -- Relación entre `reseñas` y `reservas`
-    FOREIGN KEY (reserva_id) REFERENCES reservas (id_reserva)
-)
