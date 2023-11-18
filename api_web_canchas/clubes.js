@@ -18,15 +18,12 @@ clubesRouter.post(
   "/",
   body("nombre")
     .matches(/^[\p{L}\p{N}\s]+$/u)
-    .isLength({ min: 1, max: 45 })
-    .withMessage("El nombre debe tener entre 1 y 45 caracteres"),
+    .isLength({ min: 1, max: 45 }),
   body("direccion")
     .matches(/^[\p{L}\p{N}\s]+$/u)
-    .isLength({ min: 1, max: 100 })
-    .withMessage("La dirección debe tener entre 1 y 100 caracteres"),
+    .isLength({ min: 1, max: 100 }),
   body("telefono")
-    .isLength({ min: 10, max: 12 })
-    .withMessage("El teléfono debe tener entre 10 y 12 caracteres"),
+    .isLength({ min: 10, max: 12 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
@@ -75,15 +72,12 @@ clubesRouter.put(
   "/:id",
   body("nombre")
     .isLength({ min: 1, max: 45 })
-    .matches(/^[\p{L}\p{N}\s]+$/u)
-    .withMessage("El nombre debe tener entre 1 y 45 caracteres"),
+    .matches(/^[\p{L}\p{N}\s]+$/u),
   body("direccion")
     .matches(/^[\p{L}\p{N}\s,]+$/u)
-    .isLength({ min: 1, max: 100 })
-    .withMessage("La dirección debe tener entre 1 y 100 caracteres"),
+    .isLength({ min: 1, max: 100 }),
   body("telefono")
-    .isLength({ min: 10, max: 12 })
-    .withMessage("El teléfono debe tener entre 10 y 12 caracteres"),
+    .isLength({ min: 10, max: 12 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
