@@ -1,17 +1,18 @@
-import { Hero } from "./componentes/Hero";
-import { NavBar } from "./componentes/NavBar";
 import { Footer } from "./componentes/Footer";
-import { Date } from "./componentes/Date";
-import { Canchase } from "./componentes/Canchas";
+import { Navbar } from "./componentes/NavBar";
+import { Hero } from "./componentes/Hero";
 
 
 export default function App() {
   
   return (
+    //NavBar
+    //Hero
+    //Footer
     <>
-    <NavBar/>
-    <Canchas/>
-    <Footer/>
+      <Navbar />
+      <Hero />
+      <Footer />
     </>
   );
 }
