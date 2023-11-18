@@ -45,10 +45,9 @@ personasRouter
   .get("/", async (req, res) => {
     const [rows] = await db.execute("SELECT * FROM personas");
     res.send(rows);
-  })
-
+  });
   //* Consultar persona por ID
-  .get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
+personasRouter.get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });

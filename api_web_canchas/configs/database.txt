@@ -49,14 +49,14 @@ CREATE TABLE canchas (
 /*5to*/
 CREATE TABLE reservas (
   id_reserva INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_id INT NOT NULL,
+  cuenta_id INT NOT NULL,
   cancha_id INT NOT NULL,
   cant_jugadores INT NOT NULL,
   fecha DATE NOT NULL,
   hora TIME NOT NULL,
-  estado_reserva VARCHAR(45) NOT NULL,
-  CONSTRAINT fk_usuarios_reservas -- Relación entre `reservas` y `usuarios`
-  FOREIGN KEY (usuario_id) REFERENCES usuarios (id_usuario),
-  CONSTRAINT fk_canchas_reservas -- Relación entre `reservas` y `canchas`
+  estado_reserva int NOT NULL,
+  CONSTRAINT fk_cuentas_reservas
+  FOREIGN KEY (cuenta_id) REFERENCES cuentas (id),
+  CONSTRAINT fk_canchas_reservas
   FOREIGN KEY (cancha_id) REFERENCES canchas (id_cancha)
 );

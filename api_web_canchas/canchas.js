@@ -22,14 +22,14 @@ canchasRouter.post(
   body("club_id").isInt().isLength({ min: 1 }),
   body("tipo_deporte")
     .matches(/^[\p{L}\p{N}\s]+$/u)
-    .isLength({ min: 1, max: 60 }),
+    .isLength({ min: 1, max: 14 }),
   body("dimensiones")
     .matches(/^[\p{L}\p{N}\s]+$/u)
-    .isLength({ min: 1, max: 45 }),
+    .isLength({ min: 1, max: 10 }),
   body("precio").isNumeric({ min: 1, max: 10000 }),
   body("suelo")
     .matches(/^[\p{L}\p{N}\s]+$/u)
-    .isLength({ min: 1, max: 60 }),
+    .isLength({ min: 1, max: 25 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {

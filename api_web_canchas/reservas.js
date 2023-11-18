@@ -1,5 +1,5 @@
 import express from "express";
-import { db } from "./models/database/db.js";
+import { db } from "./db.js";
 import { body, param, validationResult } from "express-validator";
 
 /*
@@ -22,7 +22,7 @@ export const reservasRouter = express.Router();
 
 reservasRouter.post(
   "/",
-  body("usuario_id").isInt({ min: 1 }),
+  body("cuenta_id").isInt({ min: 1 }),
   body("cancha_id").isInt({ min: 1 }),
   body("cant_jugadores").isInt({ min: 1 }),
   body("fecha").isISO8601(),
@@ -34,7 +34,7 @@ reservasRouter.post(
       res.status(400).send({ errors: validacion.array() });
     }
     const {
-      usuario_id,
+      cuenta_id,
       cancha_id,
       cant_jugadores,
       fecha,
@@ -42,9 +42,9 @@ reservasRouter.post(
       estado_reserva,
     } = req.body;
     await db.execute(
-      "INSERT INTO reservas (usuario_id, cancha_id, cant_jugadores, fecha, hora, estado_reserva) VALUES (:usuario_id, :cancha_id, :cant_jugadores, :fecha, :hora, :estado_reserva)",
+      "INSERT INTO reservas (cuenta_id, cancha_id, cant_jugadores, fecha, hora, estado_reserva) VALUES (:cuenta_id, :cancha_id, :cant_jugadores, :fecha, :hora, :estado_reserva)",
       {
-        usuario_id: usuario_id,
+        cuenta_id: cuenta_id,
         cancha_id: cancha_id,
         cant_jugadores: cant_jugadores,
         fecha: fecha,
@@ -58,7 +58,7 @@ reservasRouter.post(
 
 reservasRouter.put(
   "/:id",
-  body("usuario_id").isInt({ min: 1 }),
+  body("cuenta_id").isInt({ min: 1 }),
   body("cancha_id").isInt({ min: 1 }),
   body("cant_jugadores").isInt({ min: 1 }),
   body("fecha").isISO8601(),
@@ -71,7 +71,7 @@ reservasRouter.put(
     }
     const { id } = req.params;
     const {
-      usuario_id,
+      cuenta_id,
       cancha_id,
       cant_jugadores,
       fecha,
@@ -79,10 +79,10 @@ reservasRouter.put(
       estado_reserva,
     } = req.body;
     await db.execute(
-      "UPDATE reservas set usuario_id=:usuario_id, cancha_id=:cancha_id, cant_jugadores=:cant_jugadores, fecha=:fecha, hora=:hora, estado_reserva=:estado_reserva where id_reserva=:id",
+      "UPDATE reservas set cuenta_id=:usuario_id, cancha_id=:cancha_id, cant_jugadores=:cant_jugadores, fecha=:fecha, hora=:hora, estado_reserva=:estado_reserva where id_reserva=:id",
       {
         id,
-        usuario_id: usuario_id,
+        cuenta_id: cuenta_id,
         cancha_id: cancha_id,
         cant_jugadores: cant_jugadores,
         fecha: fecha,
@@ -131,21 +131,21 @@ reservasRouter.delete(
   }
 );
 
-reservasRouter.get(
-  "/:id/usuario",
-  param("id").isInt().isLength({ min: 1 }),
-  async (req, res) => {
-    const validacion = validationResult(req);
-    if (!validacion.isEmpty()) {
-      res.status(400).send({ errors: validacion.array() });
-    }
-    const { id } = req.params;
-    const [rows] = await db.execute(
-      "SELECT u.id_usuario, u.nombre, u.apellido FROM usuarios u JOIN reservas r ON u.id_usuario = r.usuario_id where id_reserva=:id",
-      {
-        id,
-      }
-    );
-    res.status(200).send(rows[0]);
-  }
-);
+// reservasRouter.get(
+//   "/:id/cuenta",
+//   param("id").isInt().isLength({ min: 1 }),
+//   async (req, res) => {
+//     const validacion = validationResult(req);
+//     if (!validacion.isEmpty()) {
+//       res.status(400).send({ errors: validacion.array() });
+//     }
+//     const { id } = req.params;
+//     const [rows] = await db.execute(
+//       "SELECT u.id_usuario, u.nombre, u.apellido FROM usuarios u JOIN reservas r ON u.id_usuario = r.usuario_id where id_reserva=:id",
+//       {
+//         id,
+//       }
+//     );
+//     res.status(200).send(rows[0]);
+//   }
+// );
