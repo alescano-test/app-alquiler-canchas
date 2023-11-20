@@ -22,7 +22,7 @@ cuentasRouter.post(
     "/",
     body("usuario").isAlphanumeric().isLength({ min: 1, max: 25 }),
     body("password").isStrongPassword({
-      minLength: 8,
+      minLength: 4,
       minLowercase: 1,
       minUppercase: 1,
       minNumbers: 1,
