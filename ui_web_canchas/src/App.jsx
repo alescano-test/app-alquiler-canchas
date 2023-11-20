@@ -1,6 +1,9 @@
 import { Footer } from "./componentes/Footer";
 import { Navbar } from "./componentes/NavBar";
 import { Hero } from "./componentes/Hero";
+import { Fecha } from "./componentes/Fecha";
+
+
 
 
 export default function App() {
@@ -10,7 +13,10 @@ export default function App() {
     //Hero
     //Footer
     <>
-      <Navbar />
+      
+           
+      <Navbar>
+      </Navbar>
       <Hero />
       <Footer />
     </>

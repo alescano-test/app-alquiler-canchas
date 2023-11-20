@@ -11,25 +11,19 @@ export default {
         normal: '#5c8001',
         claro:'#7cb518',
       },
-
       'amarillo' : '#f3de2c',
       'naranja': {
         normal: '#fb6107',
         claro: '#fbb02d',
       },
-      
-    daisyui: {
-      themes: {
-        
-        }
-      },
+      'blanco': '#f5f6f7',
     },
+
     fontFamily: {
       'base': ['Poppins', 'sans-serif'],
       'texts' : ['ui-sans-serif', 'system-ui'],
     }
   },
+
   plugins: [require('daisyui')],
-
 }
-
