@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function IniciarSesion() {
+export default function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 

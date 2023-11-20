@@ -4,6 +4,8 @@ import { Hero } from "./componentes/Hero";
 import { Fecha } from "./componentes/Fecha";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./paginas/Home";
+import IniciarSesion from "../src/paginas/Login";
+import Login from "../src/paginas/Login";
 export default function App() {
   return (
     //NavBar
@@ -11,9 +13,10 @@ export default function App() {
     //Footer
     <>
       <Routes>
-      <Route path="/" element={<Home/>}>
-      <Route index element={<Hero/>} />
-      </Route>
+        <Route path="/" element={<Home />}>
+          <Route index element={<Hero />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
       </Routes>
     </>
   );
