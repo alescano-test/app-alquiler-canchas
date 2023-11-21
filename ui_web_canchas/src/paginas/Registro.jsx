@@ -1,9 +1,10 @@
 import { useAuthContext } from "../AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { Boton } from "../componentes/Boton";
 import { Input } from "../componentes/Input";
+import {login} from "../AuthContext"
 
 export default function Registro() {
   const [usuario, setUsuario] = useState("");
@@ -25,7 +26,10 @@ export default function Registro() {
         nombre,
         apellido,
       }).then(function (response) {
-        console.log(response);
+        console.log(response.data)
+        if (response.data.mensaje === "Terminó correctamente."){
+          console.log("registrado");
+        }
       })
       .catch(function (error) {
         console.log(error);
