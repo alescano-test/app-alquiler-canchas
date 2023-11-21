@@ -17,7 +17,7 @@ export const Hero = () => {
                         <p className="font-texts text-2xl text-black">Explorá las canchas disponibles en tu ciudad y en tiempo real.</p>
                     </div>
                 </div>
-                <div className="selectores flex row-start-2 space-x-10">
+                <div className="selectores flex row-start-2 grow space-x-10">
                     <select className="h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
                         <option disabled selected>Deporte</option>
                         <option>Fútbol</option>
