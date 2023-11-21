@@ -54,7 +54,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <div className="form-control m-auto">
-              <Link to= "/Home">
+              <Link to= "/">
                 <Boton btnNombre="Ingresar" />
               </Link>
               
