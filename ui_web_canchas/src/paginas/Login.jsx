@@ -3,28 +3,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { Boton } from "../componentes/Boton";
-import { Link } from "react-router-dom";
 
 export default function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuthContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [error, setError] = useState(false);
 
   const from = location.state?.from?.pathname || "/";
   const enviarInfoUsuario = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:3000/cuentas", {
-        usuario,
-        password,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log("usuario:", usuario);
-    console.log("password:", password);
+    axios.post("http://localhost:3000/auth/login", {
+      usuario,
+      password,
+    });
+    login(
+      usuario,
+      password,
+      () => navigate(from, { replace: true }),
+      () => setError(true)
+    );
   };
   return (
     <>
@@ -64,10 +64,7 @@ export default function Login() {
             }
             
             <div className="form-control m-auto">
-              <Link to= "/">
-                <Boton btnNombre="Ingresar" />
-              </Link>
-              
+              <Boton type="submit" btnNombre="Ingresar" />
             </div>
 
             
