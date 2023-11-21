@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import React from "react";
 import { AuthProvider } from "./AuthContext.jsx";
+import {AuthProvider} from './AuthContext.jsx'
 
 
 

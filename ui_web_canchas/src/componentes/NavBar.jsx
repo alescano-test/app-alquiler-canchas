@@ -5,6 +5,7 @@ import { Visible } from "./RequireAuth";
 import { Logueado } from "./Logueado";
 import { Navigate } from "react-router-dom";
 
+
 export const Navbar = () => {
   return (
     <>
