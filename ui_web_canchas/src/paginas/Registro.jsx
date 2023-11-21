@@ -3,10 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { Boton } from "../componentes/Boton";
+import { Input } from "../componentes/Input";
 
 export default function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
   const { login } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +21,8 @@ export default function Login() {
     axios.post("http://localhost:3000/auth/login", {
       usuario,
       password,
+      nombre,
+      apellido,
     });
     login(
       usuario,
@@ -30,31 +35,33 @@ export default function Login() {
     <>
       <div
         className="hero min-h-screen"
-        style={{ backgroundImage: "url(https://4tv4.short.gy/ZTtXLq)" }}
+        style={{ backgroundImage: "url(https://4tv4.short.gy/ZfJnOv)" }}
       >
         <div className="container w-auto h-96 ">
           <div className="max-h-20 font-texts p-10">
-            <p className="font-base font-bold tracking-wide text-5xl text-amarillo">
-              Ingresá y controlá tus reservas!
+            <p className="font-base font-bold tracking-wide text-5xl text-blanco">
+              Registrate para obtener beneficios!
             </p>
           </div>
           <form
             className="flex flex-col p-10 gap-3 font-base"
             onSubmit={enviarInfoUsuario}
           >
-            <input
-              className="input input-bordered"
-              type="text"
-              placeholder="Usuario"
+            <Input inputNombre="Usuario"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
             />
-            <input
-              className="input input-bordered"
-              type="password"
-              placeholder="Contraseña"
+            <Input inputNombre="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+            <Input inputNombre="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+           <Input inputNombre="Apellido"
+              value={apellido}
+              onChange={(e) => setApellido(e.target.value)}
             />
             {error && 
               <div role="alert" className="alert alert-error font-base ">

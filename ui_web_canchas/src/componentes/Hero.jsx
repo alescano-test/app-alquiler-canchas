@@ -18,8 +18,8 @@ export const Hero = () => {
                         <p className="font-texts text-2xl text-black">Explorá las canchas disponibles en tu ciudad y en tiempo real.</p>
                     </div>
                 </div>
-                <div className="selectores flex row-start-2 grow space-x-10">
-                    <select className="h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
+                <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
+                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
                         <option disabled selected>Deporte</option>
                         <option>Fútbol</option>
                         <option>Tenis</option>
@@ -27,7 +27,7 @@ export const Hero = () => {
                         <option>Voley</option>
                     </select>
                     <Fecha />
-                    <select className="h-10 w-60 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
+                    <select className="form-select h-10 w-60 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
                         <option disabled selected>Hora</option>
                         <option>20:00</option>
                         <option>21:00</option>
@@ -35,7 +35,7 @@ export const Hero = () => {
                         <option>23:00</option>
                         <option>00:00</option>
                     </select>
-                    <Link to="/resultado-canchas">
+                    <Link to="/resultadoCanchas">
                         <Boton btnNombre="Buscar"/>
                     </Link>
                     

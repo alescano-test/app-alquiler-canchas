@@ -85,7 +85,6 @@ export const authRouter = express
       const sesion = {
         usuario: user.usuario,
         personaId: user.personaId,
-        rol: user.rol,
         token,
         estado: true
       };

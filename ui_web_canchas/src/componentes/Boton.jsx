@@ -7,13 +7,13 @@ export const Boton = ({btnNombre}) => {
           bg-verde-claro 
           font-texts
           font-bold
-          h-10 w-52 
+          h-10 w-48 
           transition 
           ease-in-out 
           delay-50 
           hover:-translate-y-1 
           hover:scale-110 duration-300
-          hover:bg-amarillo"> {btnNombre}
+          hover:bg-amarillo">{btnNombre}
         </button>
     </>
     
