@@ -80,7 +80,7 @@ personasRouter.post(
     minLowercase: 1,
     minUppercase: 1,
     minNumbers: 1,
-    minSymbols: 0,
+    minSymbols: 1,
   }),
   async (req, res) => {
     const validacion = validationResult(req);

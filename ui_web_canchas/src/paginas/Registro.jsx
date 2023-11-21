@@ -16,9 +16,20 @@ export default function Registro() {
 
   const from = location.state?.from?.pathname || "/";
 
-  const cargarInfoUsuario = async (e) => {
+  const cargarInfoUsuario = (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:3000/personas/crear-persona-cuenta", JSON.stringify({usuario, password, nombre, apellido}))
+    axios
+      .post("http://localhost:3000/personas/crear-persona-cuenta", {
+        usuario,
+        password,
+        nombre,
+        apellido,
+      }).then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
   return (
     <>
@@ -36,7 +47,35 @@ export default function Registro() {
             className="flex flex-col p-10 gap-3 font-base"
             onSubmit={cargarInfoUsuario}
           >
-            <Input
+            <input
+              className="input input-bordered"
+              type="text"
+              placeholder="Usuario"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+            />
+            <input
+              className="input input-bordered"
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              className="input input-bordered"
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+            <input
+              className="input input-bordered"
+              type="text"
+              placeholder="Apellido"
+              value={apellido}
+              onChange={(e) => setApellido(e.target.value)}
+            />
+            {/* <Input
               inputNombre="Usuario"
               value={usuario}
               tipo="text"
@@ -59,7 +98,7 @@ export default function Registro() {
               value={apellido}
               tipo="text"
               onChange={(e) => setApellido(e.target.value)}
-            />
+            /> */}
             {error && (
               <div role="alert" className="alert alert-error font-base ">
                 <svg
