@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import logo_nombre from "../img/logo_nombre.png";
 import { Boton } from "./Boton";
 
+
 export const Navbar = () => {
   return (
     <>
