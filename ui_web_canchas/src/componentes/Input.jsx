@@ -1,10 +1,10 @@
-export const Input = ({inputNombre}) => {
+export const Input = ({inputNombre, tipo}) => {
 
     return (
       <>
           <input
               className="input input-bordered"
-              type="password"
+              type={tipo}
               placeholder={inputNombre}
             />
       </>

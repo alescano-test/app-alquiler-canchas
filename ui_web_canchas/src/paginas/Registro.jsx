@@ -5,31 +5,20 @@ import axios from "axios";
 import { Boton } from "../componentes/Boton";
 import { Input } from "../componentes/Input";
 
-export default function Login() {
+export default function Registro() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const { login } = useAuthContext();
-  const navigate = useNavigate();
+
   const location = useLocation();
   const [error, setError] = useState(false);
 
   const from = location.state?.from?.pathname || "/";
-  const enviarInfoUsuario = async (e) => {
+
+  const cargarInfoUsuario = async (e) => {
     e.preventDefault();
-    axios.post("http://localhost:3000/auth/login", {
-      usuario,
-      password,
-      nombre,
-      apellido,
-    });
-    login(
-      usuario,
-      password,
-      () => navigate(from, { replace: true }),
-      () => setError(true)
-    );
+    await axios.post("http://localhost:3000/personas/crear-persona-cuenta", JSON.stringify({usuario, password, nombre, apellido}))
   };
   return (
     <>
@@ -45,38 +34,55 @@ export default function Login() {
           </div>
           <form
             className="flex flex-col p-10 gap-3 font-base"
-            onSubmit={enviarInfoUsuario}
+            onSubmit={cargarInfoUsuario}
           >
-            <Input inputNombre="Usuario"
+            <Input
+              inputNombre="Usuario"
               value={usuario}
+              tipo="text"
               onChange={(e) => setUsuario(e.target.value)}
             />
-            <Input inputNombre="Contraseña"
+            <Input
+              inputNombre="Contraseña"
               value={password}
+              tipo="password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Input inputNombre="Nombre"
+            <Input
+              inputNombre="Nombre"
               value={nombre}
+              tipo="text"
               onChange={(e) => setNombre(e.target.value)}
             />
-           <Input inputNombre="Apellido"
+            <Input
+              inputNombre="Apellido"
               value={apellido}
+              tipo="text"
               onChange={(e) => setApellido(e.target.value)}
             />
-            {error && 
+            {error && (
               <div role="alert" className="alert alert-error font-base ">
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
                 <span>Error! Usuario o contraseña inválido.</span>
               </div>
-            }
-            
-            <div className="form-control m-auto">
-              <Boton type="submit" btnNombre="Ingresar" />
-            </div>
+            )}
 
-            
+            <div className="form-control m-auto">
+              <Boton type="submit" btnNombre="Registrate" />
+            </div>
           </form>
-          
         </div>
       </div>
     </>
