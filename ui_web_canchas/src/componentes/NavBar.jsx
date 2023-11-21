@@ -7,14 +7,12 @@ export const Navbar = () => {
         <>
         <div className="contenedor-navbar bg-verde-oscuro flex justify-between" >
             <div className="contenedor-img ms-4">
-                <Link to='/'>
+                <Link href= "/">
                     <img src={logo_nombre} />
                 </Link>
             </div>
             <div className="self-center mr-3">
-            <Link to='/login'>
                 <Boton btnNombre="Iniciar Sesión" />
-            </Link>
             </div>
 
         </div>
