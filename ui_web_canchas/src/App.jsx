@@ -4,7 +4,6 @@ import { Hero } from "./componentes/Hero";
 import { Fecha } from "./componentes/Fecha";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./paginas/Home";
-import IniciarSesion from "../src/paginas/Login";
 import Login from "../src/paginas/Login";
 export default function App() {
   return (

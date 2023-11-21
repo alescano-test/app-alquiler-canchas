@@ -12,7 +12,7 @@ export const Selectores = ({selectNombre}) => {
             <option disabled selected>{selectNombre}</option>
             
             
-                
+            
         </select> 
       </>
       
