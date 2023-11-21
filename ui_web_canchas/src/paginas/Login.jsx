@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { Boton } from "../componentes/Boton";
-import { Link } from "react-router-dom";
 
 export default function Login() {
   const [usuario, setUsuario] = useState("");
@@ -54,10 +53,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <div className="form-control m-auto">
-              <Link to= "/">
-                <Boton btnNombre="Ingresar" />
-              </Link>
-              
+              <Boton type="submit" btnNombre="Ingresar" />
             </div>
           </form>
         </div>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { Boton } from "./Boton"
 import { Fecha } from "./Fecha"
 import { useState } from "react"
@@ -34,7 +35,10 @@ export const Hero = () => {
                         <option>23:00</option>
                         <option>00:00</option>
                     </select>
-                    <Boton btnNombre="Buscar"/>
+                    <Link to="/resultado-canchas">
+                        <Boton btnNombre="Buscar"/>
+                    </Link>
+                    
                 </div>
             </div> 
         </div>
