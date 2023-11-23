@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Cancha } from "../componentes/Cancha";
 import axios from "axios";
-import { BotonReservas } from "../componentes/BotonReservas";
 
 export default function ResultadoCanchas() {
   const [canchas, setCanchas] = useState([]);
@@ -22,6 +21,7 @@ export default function ResultadoCanchas() {
           {canchas.map((cancha) => {
             return (
               <Cancha
+                imagen={<iframe src="https://giphy.com/embed/oqWEEn8VBrlqp7HBqb" width="480" height="238" class="giphy-embed" allowFullScreen></iframe>}
                 nombreClub={cancha.nombre}
                 dimensiones={cancha.dimensiones}
                 cant_jugadores = {cancha.cant_jugadores}
@@ -30,7 +30,6 @@ export default function ResultadoCanchas() {
               />
             );
           })}
-
 
         </div>
         

@@ -1,31 +1,31 @@
 /* Creación del schema  */
-CREATE SCHEMA `sistema_reservas_canchas` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+CREATE SCHEMA sistema_reservas_canchas DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
 USE sistema_reservas_canchas;
 
 /* Creación de tablas */
 
-/*1er*/
-CREATE TABLE `personas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(35) NOT NULL,
-  `apellido` varchar(35) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
+/1er/
+CREATE TABLE personas (
+  id int NOT NULL AUTO_INCREMENT,
+  nombre varchar(35) NOT NULL,
+  apellido varchar(35) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY id_UNIQUE (id)
 )
 
-/*2do*/
-CREATE TABLE `cuentas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `usuario` varchar(25) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `persona_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `persona_id_UNIQUE` (`persona_id`),
-  CONSTRAINT `fk_cuentas_personas_persona_id` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+/2do/
+CREATE TABLE cuentas (
+  id int NOT NULL AUTO_INCREMENT,
+  usuario varchar(25) NOT NULL,
+  password varchar(150) NOT NULL,
+  persona_id int NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY id_UNIQUE (id),
+  UNIQUE KEY persona_id_UNIQUE (persona_id),
+  CONSTRAINT fk_cuentas_personas_persona_id FOREIGN KEY (persona_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE CASCADE
 )
 
-/*3ro*/
+/3ro/
 CREATE TABLE clubes (
   id_club INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(45) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE clubes (
   telefono VARCHAR(25) NOT NULL
 );
 
-/*3ro*/
+/3ro/
 CREATE TABLE canchas (
   id_cancha INT PRIMARY KEY AUTO_INCREMENT,
   club_id INT NOT NULL,
@@ -42,11 +42,11 @@ CREATE TABLE canchas (
   precio INT NOT NULL,
   suelo VARCHAR(60) NOT NULL,
   INDEX id_tipo_deporte_idx (tipo_deporte),
-  CONSTRAINT fk_clubes_canchas -- Relación entre `canchas` y `clubes`
+  CONSTRAINT fk_clubes_canchas -- Relación entre canchas y clubes
   FOREIGN KEY (club_id) REFERENCES clubes (id_club)
 );
 
-/*5to*/
+/5to/
 CREATE TABLE reservas (
   id_reserva INT PRIMARY KEY AUTO_INCREMENT,
   cuenta_id INT NOT NULL,
@@ -60,3 +60,37 @@ CREATE TABLE reservas (
   CONSTRAINT fk_canchas_reservas
   FOREIGN KEY (cancha_id) REFERENCES canchas (id_cancha)
 );
+
+CREATE TABLE turnos (
+  id_turno INT PRIMARY KEY AUTO_INCREMENT,
+  cancha_id INT NOT NULL,
+  fecha DATE NOT NULL,
+  hora_turno TIME NOT NULL,
+  estado_turno int NOT NULL,
+  CONSTRAINT fk_canchas_turnos
+  FOREIGN KEY (cancha_id) REFERENCES canchas (id_cancha)
+);
+
+CREATE DEFINER=root@localhost PROCEDURE generar_turnos()
+BEGIN
+  DECLARE i INT;
+  DECLARE j INT;
+  SET i = 2;
+  WHILE i <= (SELECT COUNT(*) FROM canchas) DO
+    SET j = 18;
+    WHILE j <= 23 DO
+      INSERT INTO turnos (cancha_id, fecha, hora_turno, estado_turno)
+      SELECT i, CURDATE(), CONCAT(j, ':00:00'), 1
+      FROM dual
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM turnos
+        WHERE cancha_id = i
+          AND fecha = CURDATE()
+          AND hora_turno = CONCAT(j, ':00:00')
+      );
+      SET j = j + 1;
+    END WHILE;
+    SET i = i + 1;
+  END WHILE;
+END

@@ -32,6 +32,7 @@ export const Hero = () => {
                 </div>
                 <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
                     <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" name="Elige un deporte">
+                    <option disabled selected>Deporte</option>
                         {deportes.map((deporte) => {
                             return(
                                 <option key={deporte.id_cancha}>

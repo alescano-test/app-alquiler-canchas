@@ -104,20 +104,20 @@ cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => 
   );
 
   cuentasRouter.get(
-    "/:id/personas",
-    param("id").isInt().isLength({ min: 1 }),
-    async (req, res) => {
-      const validacion = validationResult(req);
-      if (!validacion.isEmpty()) {
-        res.status(400).send({ errors: validacion.array() });
+  "/:id/personas",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+    }
+    const { id } = req.params;
+    const [rows] = await db.execute(
+      "SELECT cuentas.id,cuentas.usuario,personas.nombre,personas.apellido FROM cuentas INNER JOIN personas ON cuentas.persona_id = personas.id WHERE cuentas.id = 1;",
+      {
+        id,
       }
-      const { id } = req.params;
-      const [rows] = await db.execute(
-        "SELECT cuentas.id,cuentas.usuario,personas.nombre,personas.apellido FROM cuentas INNER JOIN personas ON cuentas.persona_id = personas.id WHERE cuentas.id = 1;",
-        {
-          id,
-        }
-      );
-      res.status(200).send(rows[0]);
-    }
-  );
+    );
+    res.status(200).send(rows[0]);
+  }
+);
