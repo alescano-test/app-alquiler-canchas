@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Boton } from "../componentes/Boton";
 import { Input } from "../componentes/Input";
-import {login} from "../AuthContext"
+import {AuthProvider} from "../AuthContext"
 
 export default function Registro() {
   const [usuario, setUsuario] = useState("");

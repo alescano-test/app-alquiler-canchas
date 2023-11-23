@@ -1,11 +1,23 @@
 import { Link } from "react-router-dom"
 import { Boton } from "./Boton"
 import { Fecha } from "./Fecha"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios";
 
 export const Hero = () => {
-    const [tipoDeporte, setTipoDeporte] = useState("")
-    const [hora, setHora] = useState("")
+    const [deportes, setDeportes] = useState([])
+    const [hora, setHora] = useState()
+
+    useEffect(() => {
+        const buscarDeporte = async () => {
+            const datosDeporte = await axios.get('http://localhost:3000/canchas');
+            const datos = datosDeporte.data
+            setDeportes(datos)
+        }
+        buscarDeporte()
+    }, [])
+
+
 
 
     return(
@@ -19,12 +31,14 @@ export const Hero = () => {
                     </div>
                 </div>
                 <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
-                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
-                        <option disabled selected>Deporte</option>
-                        <option>Fútbol</option>
-                        <option>Tenis</option>
-                        <option>Padel</option>
-                        <option>Voley</option>
+                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" name="Elige un deporte">
+                        {deportes.map((deporte) => {
+                            return(
+                                <option key={deporte.id_cancha}>
+                                    {deporte.tipo_deporte}
+                                </option>
+                            )
+                        })}
                     </select>
                     <Fecha />
                     <select className="form-select h-10 w-60 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">

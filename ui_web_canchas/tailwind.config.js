@@ -17,6 +17,8 @@ export default {
         claro: '#fbb02d',
       },
       'blanco': '#f5f6f7',
+      'rojo': '#dc2626',
+      'fondo': '#171717',
     },
 
     fontFamily: {

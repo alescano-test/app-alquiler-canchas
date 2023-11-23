@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import logo_nombre from "../img/logo_nombre.png";
-import { Boton } from "./Boton";
 import { Visible } from "./RequireAuth";
 import { Logueado } from "./Logueado";
-import { Navigate } from "react-router-dom";
 
 
 export const Navbar = () => {
@@ -18,8 +16,7 @@ export const Navbar = () => {
         <div className="self-center mr-3 flex gap-10">
             <Visible>
                 <Logueado/>
-            </Visible>
-          
+            </Visible> 
         </div>
       </div>
     </>

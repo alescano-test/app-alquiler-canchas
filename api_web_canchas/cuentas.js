@@ -83,3 +83,41 @@ cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => 
     await db.execute("DELETE FROM cuentas WHERE id = :id", { id });
     res.send("ok");
   });
+
+  cuentasRouter.get(
+    "/:id/reservas",
+    param("id").isInt().isLength({ min: 1 }),
+    async (req, res) => {
+      const validacion = validationResult(req);
+      if (!validacion.isEmpty()) {
+        res.status(400).send({ errors: validacion.array() });
+      }
+      const { id } = req.params;
+      const [rows] = await db.execute(
+        "SELECT reservas.fecha, reservas.hora, reservas.estado_reserva, clubes.direccion FROM reservas INNER JOIN canchas INNER JOIN clubes ON canchas.club_id = clubes.id_club WHERE reservas.cuenta_id = :id",
+        {
+          id
+        }
+      );
+      res.status(200).send(rows);
+    }
+  );
+
+  cuentasRouter.get(
+    "/:id/personas",
+    param("id").isInt().isLength({ min: 1 }),
+    async (req, res) => {
+      const validacion = validationResult(req);
+      if (!validacion.isEmpty()) {
+        res.status(400).send({ errors: validacion.array() });
+      }
+      const { id } = req.params;
+      const [rows] = await db.execute(
+        "SELECT cuentas.id,cuentas.usuario,personas.nombre,personas.apellido FROM cuentas INNER JOIN personas ON cuentas.persona_id = personas.id WHERE cuentas.id = 1;",
+        {
+          id,
+        }
+      );
+      res.status(200).send(rows[0]);
+    }
+  );

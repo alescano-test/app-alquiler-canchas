@@ -51,7 +51,7 @@ export const authRouter = express
 
       // Obtengo cuenta de usuario
       const [rows, fields] = await db.execute(
-        `SELECT
+        `SELECT c.id,
            c.usuario,
            c.password,
            p.id as personaId
@@ -83,6 +83,7 @@ export const authRouter = express
       const estado = false;
       // Sesion en WEB
       const sesion = {
+        id : user.id,
         usuario: user.usuario,
         personaId: user.personaId,
         token,
@@ -98,5 +99,5 @@ export const authRouter = express
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       res.json(req.user);
-    }
-  );
+    }
+  );
