@@ -17,13 +17,12 @@ export const clubesRouter = express.Router();
 clubesRouter.post(
   "/",
   body("nombre")
-    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .matches(/^[\p{L}\sñáéíóúü0-9]+$/u)
     .isLength({ min: 1, max: 45 }),
   body("direccion")
-    .matches(/^[\p{L}\p{N}\s]+$/u)
+    .matches(/^[\p{L}\sñáéíóúü0-9]+$/u)
     .isLength({ min: 1, max: 100 }),
-  body("telefono")
-    .isLength({ min: 10, max: 12 }),
+  body("telefono").isLength({ min: 10, max: 12 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
@@ -76,8 +75,7 @@ clubesRouter.put(
   body("direccion")
     .matches(/^[\p{L}\p{N}\s,]+$/u)
     .isLength({ min: 1, max: 100 }),
-  body("telefono")
-    .isLength({ min: 10, max: 12 }),
+  body("telefono").isLength({ min: 10, max: 12 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {

@@ -7,6 +7,7 @@ import axios from "axios";
 export const Hero = () => {
     const [deportes, setDeportes] = useState([])
     const [hora, setHora] = useState()
+    const [fecha, setFecha] = useState()
 
     useEffect(() => {
         const buscarDeporte = async () => {

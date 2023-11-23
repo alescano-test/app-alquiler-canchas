@@ -5,7 +5,7 @@ export const db = await mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "tsoft",
-  database: "sistema_reservas_canchas",
+  database: "sistema_reservas_canchas_v15",
   port: 3306,
   namedPlaceholders: true, //Autocompleta los parametros en el excecute
 })

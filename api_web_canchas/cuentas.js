@@ -18,6 +18,20 @@ CREATE TABLE `cuentas` (
 
 export const cuentasRouter = express.Router();
 
+cuentasRouter.post("/:id/filtrar-turnos", async (req, res) => {
+  const { id } = req.params;
+  const { id_turno, cancha_id, fecha, hora_turno, estado_turno, tipo_deporte} = req.body;
+  const [datosTurnos] = await db.execute(
+    "SELECT id_cancha, fecha, hora_turno, estado_turno, tipo_deporte,ca.suelo  ,ca.precio ,c.id, cl.nombre, cl.direccion, ca.dimensiones from turnos INNER JOIN cuentas as c JOIN canchas as ca JOIN clubes as cl WHERE c.id = :id AND fecha = :fecha AND hora_turno = :hora_turno AND estado_turno = 1 AND ca.tipo_deporte = :tipo_deporte",
+    { id, fecha, hora_turno, tipo_deporte}
+  );
+
+  res.status(200).send(datosTurnos);
+}
+);
+
+
+
 cuentasRouter.post(
     "/",
     body("usuario").isAlphanumeric().isLength({ min: 1, max: 25 }),
@@ -121,3 +135,6 @@ cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => 
     res.status(200).send(rows[0]);
   }
 );
+
+
+
