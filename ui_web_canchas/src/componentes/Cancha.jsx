@@ -8,6 +8,7 @@ export const Cancha = ({
     cant_jugadores,
     precio,
     suelo,
+    manejarBoton
     
 }) => {
   return (
@@ -62,9 +63,17 @@ export const Cancha = ({
           </div>
           
           <div className="card-actions justify-center">
-            <Boton onClick btnNombre="Reservar" />
+            <Boton onClick={manejarBoton} btnNombre="Reservar" />
           </div>
         </div>
+        <details className="dropdown font-base">
+          <summary className="m-1 btn bg-naranja-claro">Horarios</summary>
+          <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 ">
+            <li><a>18:00</a></li>
+            <li><a>19:00</a></li>
+            <li><a>20:00</a></li>
+          </ul>
+        </details>
       </div>
     </>
   );

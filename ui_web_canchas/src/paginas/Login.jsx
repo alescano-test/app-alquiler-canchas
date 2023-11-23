@@ -1,4 +1,4 @@
-import { useAuthContext } from "../AuthContext";
+import { useAuthContext } from "../contexto/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";

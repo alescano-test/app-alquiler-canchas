@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo_nombre from "../img/logo_nombre.png";
-import { Visible } from "./RequireAuth";
+import { Visible } from "../contexto/RequireAuth"
 import { Logueado } from "./Logueado";
 
 

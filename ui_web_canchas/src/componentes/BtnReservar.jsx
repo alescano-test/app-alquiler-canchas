@@ -3,6 +3,9 @@ import axios from "axios";
 import { useAuthContext } from "../AuthContext";
 
 export const BtnReservar = () => {
+  const { sesion } = useAuthContext();
+  
+
     const [fecha, setFecha] = useState([]);
     const [hora, setHora] = useState([]);
     const [nombreClub, setNombreClub] = useState([]);

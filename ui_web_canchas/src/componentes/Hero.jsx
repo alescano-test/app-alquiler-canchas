@@ -1,24 +1,31 @@
 import { Link } from "react-router-dom"
 import { Boton } from "./Boton"
-import { Fecha } from "./Fecha"
 import { useEffect, useState } from "react"
 import axios from "axios";
 
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+
 export const Hero = () => {
     const [deportes, setDeportes] = useState([])
-    const [hora, setHora] = useState()
-    const [fecha, setFecha] = useState()
+    const [tipoDeporte, setTipoDeporte] = useState('');
+
+    const [horas, setHoras] = useState([])
+    const [obtenerHora, setObtenerHora] = useState('');
+
+    const [fechas, setFechas] = useState(new Date())
 
     useEffect(() => {
-        const buscarDeporte = async () => {
-            const datosDeporte = await axios.get('http://localhost:3000/canchas');
-            const datos = datosDeporte.data
+        const buscarCanchas = async () => {
+            const datosCanchas = await axios.get('http://localhost:3000/canchas');
+            const datos = datosCanchas.data
+            
             setDeportes(datos)
+            console.log(datosCanchas)
+            console.log(fechas)
         }
-        buscarDeporte()
+        buscarCanchas()
     }, [])
-
-
 
 
     return(
@@ -32,7 +39,10 @@ export const Hero = () => {
                     </div>
                 </div>
                 <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
-                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" name="Elige un deporte">
+                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" 
+                    onChange={(event) =>{
+                        setTipoDeporte(event.target.value);
+                    }}>
                     <option disabled selected>Deporte</option>
                         {deportes.map((deporte) => {
                             return(
@@ -42,14 +52,29 @@ export const Hero = () => {
                             )
                         })}
                     </select>
-                    <Fecha />
-                    <select className="form-select h-10 w-60 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base">
+
+
+                    <DatePicker 
+                        showIcon
+                        className="font-texts h-10 hover:border-slate-400 rounded-md border-2 border-verde-claro "
+                        dateFormat="dd/MM/yyyy"
+                        selected={fechas} 
+                        onChange={fecha => setFechas(fecha)} 
+                    />
+
+
+                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" 
+                    onChange={(event) =>{
+                        setObtenerHora(event.target.value);
+                    }}>
                         <option disabled selected>Hora</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
                         <option>20:00</option>
                         <option>21:00</option>
                         <option>22:00</option>
                         <option>23:00</option>
-                        <option>00:00</option>
+
                     </select>
                     <Link to="/resultadoCanchas">
                         <Boton btnNombre="Buscar"/>

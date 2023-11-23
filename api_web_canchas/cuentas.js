@@ -18,21 +18,40 @@ CREATE TABLE `cuentas` (
 
 export const cuentasRouter = express.Router();
 
-cuentasRouter.post("/:id/filtrar-turnos", async (req, res) => {
-  const { id } = req.params;
-  const { id_turno, cancha_id, fecha, hora_turno, estado_turno, tipo_deporte} = req.body;
-  const [datosTurnos] = await db.execute(
-    "SELECT id_cancha, fecha, hora_turno, estado_turno, tipo_deporte,ca.suelo  ,ca.precio ,c.id, cl.nombre, cl.direccion, ca.dimensiones from turnos INNER JOIN cuentas as c JOIN canchas as ca JOIN clubes as cl WHERE c.id = :id AND fecha = :fecha AND hora_turno = :hora_turno AND estado_turno = 1 AND ca.tipo_deporte = :tipo_deporte",
-    { id, fecha, hora_turno, tipo_deporte}
+  //GENERAR RESERVAS
+  cuentasRouter.post("/generar-reserva", async (req, res) => {
+    const { id, cancha_id, fecha, hora_turno, estado_reserva } = req.body;
+    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
+    await db.execute(
+      "INSERT INTO reservas (cuenta_id, cancha_id, fecha, hora, estado_reserva) VALUES (:cuenta_id, :cancha_id, :fecha, :hora, :estado_reserva)",
+      {
+        cuenta_id: id,
+        cancha_id: cancha_id,
+        fecha: fechaFormateada,
+        hora: hora_turno,
+        estado_reserva: 2,
+      }
+    );
+    await db.execute("")
+    res.status(201).send({ mensaje: "Reserva completada" });
+  });
+
+  //OBTIENE LOS TURNOS POR ID DEL USUARIO
+  cuentasRouter.post("/:id/filtrar-turnos", async (req, res) => {
+    const { id } = req.params;
+    const { id_turno, cancha_id, fecha, hora_turno, estado_turno, tipo_deporte} = req.body;
+    const [datosTurnos] = await db.execute(
+      "SELECT id_cancha, fecha, hora_turno, estado_turno, tipo_deporte,ca.suelo  ,ca.precio ,c.id, cl.nombre, cl.direccion, ca.dimensiones from turnos INNER JOIN cuentas as c JOIN canchas as ca JOIN clubes as cl WHERE c.id = :id AND fecha = :fecha AND hora_turno = :hora_turno AND estado_turno = 1 AND ca.tipo_deporte = :tipo_deporte",
+      { id, fecha, hora_turno, tipo_deporte}
+    );
+
+    res.status(200).send(datosTurnos);
+  }
   );
 
-  res.status(200).send(datosTurnos);
-}
-);
 
-
-
-cuentasRouter.post(
+  //AGREGA UNA NUEVA CUENTA
+  cuentasRouter.post(
     "/",
     body("usuario").isAlphanumeric().isLength({ min: 1, max: 25 }),
     body("password").isStrongPassword({
@@ -59,13 +78,16 @@ cuentasRouter.post(
     }
   )
 
-cuentasRouter.get("/", async (req, res) => {
-    const [rows, fields] = await db.execute(
-      "SELECT id, usuario, persona_id as personaId FROM cuentas"
-    );
-    res.send(rows);
+  //OBTENER LOS DATOS DE TODAS LAS CUENTAS
+  cuentasRouter.get("/", async (req, res) => {
+      const [rows, fields] = await db.execute(
+        "SELECT id, usuario, persona_id as personaId FROM cuentas"
+      );
+      res.send(rows);
   });
-cuentasRouter.get("/:id", async (req, res) => {
+
+  //OBTENER LOS DATOS POR ID
+  cuentasRouter.get("/:id", async (req, res) => {
     const { id } = req.params;
     const [rows, fields] = await db.execute(
       "SELECT id, usuario, persona_id as personaId FROM cuentas WHERE id = :id",
@@ -77,7 +99,9 @@ cuentasRouter.get("/:id", async (req, res) => {
       res.status(404).send({ mensaje: "Cuenta no encontrada" });
     }
   });
-cuentasRouter.get("/:id/persona", async (req, res) => {
+
+  //OBTIENE LOS DATOS DE LA PERSONA DE LA CUENTA
+  cuentasRouter.get("/:id/persona", async (req, res) => {
     const { id } = req.params;
     const [rows, fields] = await db.execute(
       "SELECT p.id, p.apellido, p.nombre \
@@ -92,12 +116,15 @@ cuentasRouter.get("/:id/persona", async (req, res) => {
       res.status(404).send({ mensaje: "Persona no encontrada" });
     }
   });
-cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
+
+  //ELIMINA LOS DATOS DE LA CUENTA
+  cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
     const { id } = req.params;
     await db.execute("DELETE FROM cuentas WHERE id = :id", { id });
     res.send("ok");
   });
 
+  //OBTIENE LAS RESERVAS DE LA CUENTA
   cuentasRouter.get(
     "/:id/reservas",
     param("id").isInt().isLength({ min: 1 }),
@@ -117,6 +144,7 @@ cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => 
     }
   );
 
+  
   cuentasRouter.get(
   "/:id/personas",
   param("id").isInt().isLength({ min: 1 }),

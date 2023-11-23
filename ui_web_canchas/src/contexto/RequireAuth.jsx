@@ -1,6 +1,6 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { useAuthContext } from "../AuthContext";
-import { Boton } from "./Boton";
+import { useAuthContext } from "../contexto/AuthContext";
+import { Boton } from "../componentes/Boton";
 
 export const RequiredAuth = ({ children }) => {
   const { sesion } = useAuthContext();

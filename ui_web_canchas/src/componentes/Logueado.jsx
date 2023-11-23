@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuthContext } from "../AuthContext";
+import { useAuthContext } from "../contexto/AuthContext";
 
 export const Logueado = () => {
   const { sesion, logout } = useAuthContext();

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAuthContext } from "../AuthContext";
+import { useAuthContext } from "../contexto/AuthContext";
 import axios from "axios";
 import { BotonReservas } from "./BotonReservas";
+import { Eliminar } from "./Eliminar";
 
 export const Lista = ({encabezado1, encabezado2, encabezado3} ) => {
   const { sesion } = useAuthContext();
@@ -10,7 +11,8 @@ export const Lista = ({encabezado1, encabezado2, encabezado3} ) => {
   useEffect(() => {
     const buscarReservas = async () => {
       const datosReservas = await axios.get(
-        `http://localhost:3000/cuentas/${sesion.id}/reservas`);
+        `http://localhost:3000/cuentas/${sesion.id}/reservas`
+      );
       const datos = datosReservas.data;
       setDatosReservas(datos);
     };
@@ -32,12 +34,12 @@ export const Lista = ({encabezado1, encabezado2, encabezado3} ) => {
           <tbody>
             {reservas.map((reserva) => {
                 return (
-                    <tr className="text-blanco" key={reserva.id_reserva}>
+                    <tr className="text-blanco" key={reserva.id}>
                         <td className=""><BotonReservas /></td>
                         <td className="">{reserva.fecha}</td>
                         <td className="">{reserva.hora}</td>
                         <td className="">{reserva.direccion}</td>
-                        <td className="">{reserva.estado_reserva}</td>
+                        <td className=""><Eliminar /></td>
                     </tr>
                 );
             })}
