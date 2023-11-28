@@ -1,7 +1,6 @@
 import { useAuthContext } from "../contexto/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Boton } from "../componentes/Boton";
 import { MensajeError } from "../componentes/MensajeError";
 
 export const Registro = () => {
@@ -63,7 +62,20 @@ export const Registro = () => {
               {error && <MensajeError mensaje="Ups! No se pudo registrar el usuario" />}
 
               <div className="form-control m-auto">
-                <Boton btnNombre="Registrar" type="submit" />
+                <button className="rounded-full
+                  bg-verde-claro 
+                  font-texts
+                  font-bold
+                  h-10 w-48 
+                  transition 
+                  ease-in-out 
+                  delay-50 
+                  hover:-translate-y-1 
+                  hover:scale-110 duration-300
+                  hover:bg-amarillo"
+                  type="submit">
+                    Registrar
+                </button>
               </div>
               
             </form>

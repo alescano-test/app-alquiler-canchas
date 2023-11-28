@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import { Boton } from "./Boton"
 import { useEffect, useState } from "react"
 import axios from "axios";
 
@@ -7,30 +6,21 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
 export const Buscador = () => {
-    const [deportes, setDeportes] = useState("");
-    console.log(deportes)
-
+    const [deportes, setDeportes] = useState([])
+    const [tipoDeporte, setTipoDeporte] = useState('');
     const [fechas, setFechas] = useState(new Date());
-    console.log(fechas)
 
-    const [horas, setHoras] = useState("")
-    console.log(horas)
-
-    axios.get('https://your-api-url', {
-        params: {
-            tipo_deporte: tipoDeporte,
-            fecha: fechas.format('YYYY-MM-DD'),
-            hora: setHoras
+    useEffect(() => {
+        const buscarCanchas = async () => {
+            const datosCanchas = await axios.get('http://localhost:3000/canchas');
+            const datos = datosCanchas.data
+            
+            setDeportes(datos)
+            console.log(datosCanchas)
+            console.log(setFechas)
         }
-    }).then((response) => {
-    
-    })
-    .catch((error) => {
-   
-    });
-
-
-
+        buscarCanchas()
+    }, [])
 
 
     return(
@@ -46,7 +36,7 @@ export const Buscador = () => {
                 <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
                     <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base"  
                     onChange={(event) =>{
-                        setDeportes(event.target.value);
+                        setTipoDeporte(event.target.value);
                     }}>
                         {deportes.map((deporte) => {
                             return(
@@ -57,7 +47,6 @@ export const Buscador = () => {
                         })}
                     </select>
 
-
                     <DatePicker 
                         showIcon
                         className="font-texts h-10 hover:border-slate-400 rounded-md border-2 border-verde-claro "
@@ -65,7 +54,6 @@ export const Buscador = () => {
                         selected={fechas} 
                         onChange={fecha => setFechas(fecha)} 
                     />
-
 
                     <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" 
                     onChange={(event) =>{
@@ -77,10 +65,22 @@ export const Buscador = () => {
                         <option>21:00</option>
                         <option>22:00</option>
                         <option>23:00</option>
-
                     </select>
+
                     <Link to="/resultadoCanchas">
-                        <Boton btnNombre="Buscar"/>
+                        <button className="rounded-full
+                            bg-verde-claro 
+                            font-texts
+                            font-bold
+                            h-10 w-48 
+                            transition 
+                            ease-in-out 
+                            delay-50 
+                            hover:-translate-y-1 
+                            hover:scale-110 duration-300
+                            hover:bg-amarillo">
+                                Buscar
+                            </button>
                     </Link>
                     
                 </div>

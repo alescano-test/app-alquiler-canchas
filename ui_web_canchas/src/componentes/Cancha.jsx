@@ -1,14 +1,10 @@
-import { Boton } from "./Boton";
 
 export const Cancha = ({
-    imagen,
-    nombreClub,
-    direccion,
-    dimensiones,
-    cant_jugadores,
-    precio,
-    suelo,
-    manejarBoton
+  nombreClub, 
+  direccion,
+  imagen,
+  cant_jugadores,
+  precio,
     
 }) => {
   return (
@@ -42,38 +38,36 @@ export const Cancha = ({
             </svg>
             <p className="text-left pl-2">2 - 7{cant_jugadores}</p>
 
-            <svg
-              fill="none"
-              viewBox="0 0 15 15"
-              height="24"
-              width="30"
-            >
-              <path
-                fill="currentColor"
-                fillRule="evenodd"
-                d="M3 2.739a.25.25 0 01-.403.197L1.004 1.697a.25.25 0 010-.394L2.597.063A.25.25 0 013 .262v.74h6V.26a.25.25 0 01.404-.197l1.592 1.239a.25.25 0 010 .394l-1.592 1.24A.25.25 0 019 2.738V2H3v.739zM9.5 5h-7a.5.5 0 00-.5.5v7a.5.5 0 00.5.5h7a.5.5 0 00.5-.5v-7a.5.5 0 00-.5-.5zm-7-1A1.5 1.5 0 001 5.5v7A1.5 1.5 0 002.5 14h7a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 009.5 4h-7zm12.239 2H14v6h.739a.25.25 0 01.197.403l-1.239 1.593a.25.25 0 01-.394 0l-1.24-1.593a.25.25 0 01.198-.403H13V6h-.739a.25.25 0 01-.197-.403l1.239-1.593a.25.25 0 01.394 0l1.24 1.593a.25.25 0 01-.198.403z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="text-left pl-2">{dimensiones}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-left pl-2">${precio}</p>
-            <p className="text-left pl-5">Suelo: {suelo}</p>
           </div>
           
           <div className="card-actions justify-center">
-            <Boton onClick={manejarBoton} btnNombre="Reservar" />
+          <button className="rounded-full
+                  bg-verde-claro 
+                  font-texts
+                  font-bold
+                  h-10 w-48 
+                  transition 
+                  ease-in-out 
+                  delay-50 
+                  hover:-translate-y-1 
+                  hover:scale-110 duration-300
+                  hover:bg-amarillo"
+                  type="submit">
+                    Reservar
+                </button>
           </div>
         </div>
-        <details className="dropdown font-base">
+        {/* <details className="dropdown font-base">
           <summary className="m-1 btn bg-naranja-claro">Horarios</summary>
           <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 ">
             <li><a>18:00</a></li>
             <li><a>19:00</a></li>
             <li><a>20:00</a></li>
           </ul>
-        </details>
+        </details> */}
       </div>
     </>
   );

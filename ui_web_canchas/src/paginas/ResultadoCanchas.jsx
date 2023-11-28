@@ -12,6 +12,11 @@ export const ResultadoCanchas = () => {
     const buscarTurnos = async () => {
       const datosTurnos = await axios.get(
         `http://localhost:3000/turnos`,
+        {
+          headers: {
+            Authorization: `Bearer ${sesion}`,
+          },
+        }
       );
       const datos = datosTurnos.data;
       console.log(datos);
@@ -53,7 +58,6 @@ export const ResultadoCanchas = () => {
                     allowFullScreen
                   ></iframe>
                 }
-                nombreClub={turno.nombre}
                 precio={turno.precio}
               />
             );

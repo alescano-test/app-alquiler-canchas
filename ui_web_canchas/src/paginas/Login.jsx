@@ -1,6 +1,5 @@
 import { useAuthContext } from "../contexto/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Boton } from "../componentes/Boton";
 import { useState } from "react";
 
 import { MensajeError } from "../componentes/MensajeError";
@@ -47,7 +46,20 @@ export const Login = () => {
               {error && <MensajeError mensaje="Error! Usuario o contraseña incorrecto" />}
 
               <div className="form-control m-auto">
-                <Boton btnNombre="Ingresar" type="submit" />
+                <button className="rounded-full
+                  bg-verde-claro 
+                  font-texts
+                  font-bold
+                  h-10 w-48 
+                  transition 
+                  ease-in-out 
+                  delay-50 
+                  hover:-translate-y-1 
+                  hover:scale-110 duration-300
+                  hover:bg-amarillo"
+                  type="submit">
+                    Ingresar
+                </button>
               </div>
               
             </form>
