@@ -6,26 +6,31 @@ import axios from "axios";
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
-export const Hero = () => {
-    const [deportes, setDeportes] = useState([])
-    const [tipoDeporte, setTipoDeporte] = useState('');
+export const Buscador = () => {
+    const [deportes, setDeportes] = useState("");
+    console.log(deportes)
 
-    const [horas, setHoras] = useState([])
-    const [obtenerHora, setObtenerHora] = useState('');
+    const [fechas, setFechas] = useState(new Date());
+    console.log(fechas)
 
-    const [fechas, setFechas] = useState(new Date())
+    const [horas, setHoras] = useState("")
+    console.log(horas)
 
-    useEffect(() => {
-        const buscarCanchas = async () => {
-            const datosCanchas = await axios.get('http://localhost:3000/canchas');
-            const datos = datosCanchas.data
-            
-            setDeportes(datos)
-            console.log(datosCanchas)
-            console.log(fechas)
+    axios.get('https://your-api-url', {
+        params: {
+            tipo_deporte: tipoDeporte,
+            fecha: fechas.format('YYYY-MM-DD'),
+            hora: setHoras
         }
-        buscarCanchas()
-    }, [])
+    }).then((response) => {
+    
+    })
+    .catch((error) => {
+   
+    });
+
+
+
 
 
     return(
@@ -39,11 +44,10 @@ export const Hero = () => {
                     </div>
                 </div>
                 <div className="selectores flex row-start-2 grow space-x-10 flex-wrap">
-                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base" 
+                    <select className="form-select h-10 w-64 hover:border-slate-400 rounded-md border-2 border-verde-claro font-base"  
                     onChange={(event) =>{
-                        setTipoDeporte(event.target.value);
+                        setDeportes(event.target.value);
                     }}>
-                    <option disabled selected>Deporte</option>
                         {deportes.map((deporte) => {
                             return(
                                 <option key={deporte.id_cancha}>
@@ -67,7 +71,6 @@ export const Hero = () => {
                     onChange={(event) =>{
                         setObtenerHora(event.target.value);
                     }}>
-                        <option disabled selected>Hora</option>
                         <option>18:00</option>
                         <option>19:00</option>
                         <option>20:00</option>
@@ -82,35 +85,6 @@ export const Hero = () => {
                     
                 </div>
             </div> 
-        </div>
-            
-
-
-
-
-
-
-
-
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            {/*<div className="contenedor-hero" style={{backgrounImage: {bg_hero}}}>
-                <div className="texto font-texts text-left">
-                    <h1 className="font-base font-bold tracking-wide ">Reserva tu cancha al instante!</h1>
-                    <h5>Explorá las canchas disponibles en tu ciudad y en tiempo real.</h5>
-                </div>   
-                
-
-    </div>*/}
-        </>
+        </div></>
     )
 }

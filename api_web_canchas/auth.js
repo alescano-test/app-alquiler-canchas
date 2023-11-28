@@ -14,9 +14,9 @@ export function authConfig() {
 
   passport.use(
     new Strategy(jwtOptions, async (payload, next) => {
-      const [rows, fields] = await db.execute(
-        "SELECT usuario FROM cuentas WHERE usuario = :usuario",
-        { usuario: payload.usuario }
+      const [rows] = await db.execute(
+        "SELECT userName FROM usuarios WHERE userName = :userName",
+        { userName: payload.userName }
       );
       if (rows.length > 0) {
         next(null, rows[0]);
@@ -32,8 +32,8 @@ export const authRouter = express
 
   .post(
     "/login",
-    body("usuario").isAlphanumeric().isLength({ min: 1, max: 25 }),
-    body("password").isStrongPassword({
+    body("userName").isAlphanumeric().isLength({ min: 1, max: 25 }),
+    body("userPassword").isStrongPassword({
       minLength: 4,
       minLowercase: 1,
       minUppercase: 1,
@@ -47,19 +47,14 @@ export const authRouter = express
         return;
       }
 
-      const { usuario, password } = req.body;
+      const { userName, userPassword } = req.body;
 
       // Obtengo cuenta de usuario
       const [rows, fields] = await db.execute(
-        `SELECT c.id,
-           c.usuario,
-           c.password,
-           p.id as personaId
-         FROM cuentas c
-         JOIN personas p ON c.persona_id = p.id
-         WHERE usuario = :usuario`,
-        { usuario }
+        `SELECT * FROM usuarios WHERE userName = :userName`,
+        { userName }
       );
+
       if (rows.length === 0) {
         res.status(400).send("Usuario o contraseña inválida");
         return;
@@ -68,14 +63,14 @@ export const authRouter = express
       const user = rows[0];
 
       // Verificar contraseña
-      const passwordCompared = await bcrypt.compare(password, user.password);
+      const passwordCompared = await bcrypt.compare(userPassword, user.userPassword);
       if (!passwordCompared) {
         res.status(400).send("Usuario o contraseña inválida");
         return;
       }
 
       // Generar token
-      const payload = { usuario };
+      const payload = { userName };
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
@@ -83,9 +78,8 @@ export const authRouter = express
       const estado = false;
       // Sesion en WEB
       const sesion = {
-        id : user.id,
-        usuario: user.usuario,
-        personaId: user.personaId,
+        id : user.userId,
+        usuario: user.userName,
         token,
         estado: true
       };

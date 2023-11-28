@@ -28,20 +28,20 @@ export const Footer = () => {
                 <nav>
                     <header className="footer-title text-blanco">Equipo</header> 
                     {links_equipo.map(link => (
-                        <a href ="/" className="link link-hover text-blanco">{link}</a>
+                        <a key={link} href ="/" className="link link-hover text-blanco">{link}</a>
                     ))}
                     
                 </nav> 
                 <nav>
                     <header className="footer-title text-blanco">Legal</header> 
                     {links_legal.map(link => (
-                        <a href ="/" className="link link-hover text-blanco">{link}</a>
+                        <a key={link} href ="/" className="link link-hover text-blanco">{link}</a>
                     ))}
                 </nav>
                 <nav>
                     <header className="footer-title text-blanco">Social</header> 
                     <div className="grid grid-flow-col gap-4">
-                        <a href ="/">
+                        <a href ="#">
                         <svg 
                             xmlns="http://www.w3.org/2000/svg" 
                             width="24" 

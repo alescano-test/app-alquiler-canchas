@@ -3,20 +3,15 @@ import { Cancha } from "../componentes/Cancha";
 import axios from "axios";
 import { useAuthContext } from "../contexto/AuthContext";
 
-export default function ResultadoCanchas() {
+export const ResultadoCanchas = () => {
   const [canchas, setCanchas] = useState([]);
   const { sesion } = useAuthContext();
   const [reservas, setReservas] = useState([])
 
   useEffect(() => {
     const buscarTurnos = async () => {
-      const datosTurnos = await axios.post(
-        `http://localhost:3000/cuentas/${sesion.id}/filtrar-turnos`,
-        {
-          fecha: "2023-11-23",
-          hora_turno: "21:00:00",
-          tipo_deporte: "Futbol",
-        }
+      const datosTurnos = await axios.get(
+        `http://localhost:3000/turnos`,
       );
       const datos = datosTurnos.data;
       console.log(datos);
@@ -40,6 +35,8 @@ export default function ResultadoCanchas() {
     buscarTurnos();
   }, []);
 
+  
+
   return (
     <>
       <div className="hero min-h-screen flex flex-col flex-wrap p-8 py-6">
@@ -57,9 +54,7 @@ export default function ResultadoCanchas() {
                   ></iframe>
                 }
                 nombreClub={turno.nombre}
-                dimensiones={turno.dimensiones}
                 precio={turno.precio}
-                suelo={turno.suelo}
               />
             );
           })}

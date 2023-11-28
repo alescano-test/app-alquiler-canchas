@@ -2,102 +2,117 @@ import express from "express";
 import { db } from "./db.js";
 import { body, param, validationResult } from "express-validator";
 
-/*
-CREATE TABLE clubes (
-  id_club INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(45) NOT NULL,
-  direccion VARCHAR(100) NOT NULL,
-  telefono VARCHAR(25) NOT NULL
-);
-*/
-
 export const clubesRouter = express.Router();
 
-//? Método POST
+//!CREAR CLUB
 clubesRouter.post(
   "/",
-  body("nombre")
-    .matches(/^[\p{L}\sñáéíóúü0-9]+$/u)
-    .isLength({ min: 1, max: 45 }),
-  body("direccion")
-    .matches(/^[\p{L}\sñáéíóúü0-9]+$/u)
-    .isLength({ min: 1, max: 100 }),
-  body("telefono").isLength({ min: 10, max: 12 }),
+  body("nombre").isLength({ min: 1, max: 45 }),
+  body("direccion").isLength({ min: 1, max: 100 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
     }
     const { nombre, direccion, telefono } = req.body;
-    await db.execute(
-      "INSERT INTO clubes (nombre, direccion, telefono) VALUES (:nombre, :direccion, :telefono)",
-      {
-        nombre: nombre,
-        direccion: direccion,
-        telefono: telefono,
-      }
-    );
-    res.status(201).send({ mensaje: "Club agregado" });
+    try {
+      const [rows] = await db.execute(
+        "INSERT INTO clubes (nombre, direccion) VALUES (:nombre, :direccion)",
+        {
+          nombre: nombre,
+          direccion: direccion,
+        }
+      );
+      console.log(rows);
+      res.status(201).send({ mensaje: "Club agregado" });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
   }
 );
 
-clubesRouter.get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
-  const validacion = validationResult(req);
-  if (!validacion.isEmpty()) {
-    //? Si la validación es diferente a vacía
-    res.status(400).send({ errors: validacion.array() });
-  }
-  const { id } = req.params;
-  const [rows] = await db.execute("SELECT * FROM clubes WHERE ID_CLUB=:id", {
-    id,
-  });
-  if (rows.length > 0) {
-    res.status(200).send(rows[0]);
-  } else {
-    res.status(404).send("Club no encontrado");
-  }
-});
-
-clubesRouter.get("/", async (req, res) => {
-  const [rows] = await db.execute("SELECT * FROM clubes");
-  if (rows.length > 0) {
-    res.status(200).send(rows);
-  } else {
-    res.status(404).send("No hay clubes");
-  }
-});
-
+//!EDITAR CLUB
 clubesRouter.put(
   "/:id",
-  body("nombre")
-    .isLength({ min: 1, max: 45 })
-    .matches(/^[\p{L}\p{N}\s]+$/u),
-  body("direccion")
-    .matches(/^[\p{L}\p{N}\s,]+$/u)
-    .isLength({ min: 1, max: 100 }),
-  body("telefono").isLength({ min: 10, max: 12 }),
+  body("nombre").isLength({ min: 1, max: 25 }),
+  body("direccion").isLength({ min: 1, max: 100 }),
+
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
     }
     const { id } = req.params;
-    const { nombre, direccion, telefono } = req.body;
-    await db.execute(
-      "update clubes set nombre=:nombre, direccion=:direccion, telefono=:telefono WHERE id_club=:id",
-      {
-        id: id,
-        nombre: nombre,
-        direccion: direccion,
-        telefono: telefono,
-      }
-    );
-    res.status(200).send({ mensaje: "Datos del Club modificados." });
+    const { nombre, direccion } = req.body;
+    
+    try {
+      const [rows] = await db.execute(
+        "update clubes set nombre=:nombre, direccion=:direccion WHERE clubId=:id",
+        {
+          id: id,
+          nombre: nombre,
+          direccion: direccion,
+        }
+      );
+      res.status(200).send({ mensaje: "Datos del Club modificados." });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
   }
 );
 
-clubesRouter.delete("/:id", async (req, res) => {
-  const id = req.params.id;
-  await db.execute("delete from clubes where id_club=:id", { id });
-  res.status(200).send({ mensaje: "Club eliminado" });
+//!ELIMINAR CLUB
+clubesRouter.delete("/:id", param("id"), async (req, res) => {
+  const validacion = validationResult(req);
+  if (!validacion.isEmpty()) {
+    res.status(400).send({ errors: validacion.array() });
+  }
+  const { id } = req.params;
+  try {
+    const [rows] = await db.execute("delete from clubes where clubId=:id", {
+      id,
+    });
+    if (rows.affectedRows === 0) {
+      res.status(400).send({ mensaje: "No se encontró el club." });
+    } else {
+      res.status(200).send({ mensaje: "Club eliminado" });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+//!BUSCAR CLUB POR ID
+clubesRouter.get("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
+  const validacion = validationResult(req);
+  if (!validacion.isEmpty()) {
+    res.status(400).send({ errors: validacion.array() });
+  }
+  const { id } = req.params;
+  try {
+    const [rows] = await db.execute("SELECT * FROM clubes WHERE clubId=:id", {
+      id,
+    });
+    if (rows.length > 0) {
+      res.status(200).send(rows[0]);
+    } else {
+      res.status(404).send({ mensaje: "Club no encontrado." });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+//!BUSCAR TODOS LOS CLUBES
+clubesRouter.get("/", async (req, res) => {
+  const [rows] = await db.execute("SELECT * FROM clubes");
+  try {
+    if (rows.length > 0) {
+      res.status(200).send(rows);
+    } else {
+      res.status(404).send("No hay clubes");
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });

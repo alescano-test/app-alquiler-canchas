@@ -3,166 +3,143 @@ import bcrypt from "bcryptjs";
 import { db } from "./db.js";
 import { body, param, validationResult } from "express-validator";
 
-/*
-CREATE TABLE `cuentas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `usuario` varchar(25) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `persona_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `persona_id_UNIQUE` (`persona_id`),
-  CONSTRAINT `fk_cuentas_personas_persona_id` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-)
-*/
-
 export const cuentasRouter = express.Router();
 
-  //GENERAR RESERVAS
-  cuentasRouter.post("/generar-reserva", async (req, res) => {
-    const { id, cancha_id, fecha, hora_turno, estado_reserva } = req.body;
-    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
-    await db.execute(
-      "INSERT INTO reservas (cuenta_id, cancha_id, fecha, hora, estado_reserva) VALUES (:cuenta_id, :cancha_id, :fecha, :hora, :estado_reserva)",
-      {
-        cuenta_id: id,
-        cancha_id: cancha_id,
-        fecha: fechaFormateada,
-        hora: hora_turno,
-        estado_reserva: 2,
-      }
-    );
-    await db.execute("")
-    res.status(201).send({ mensaje: "Reserva completada" });
-  });
-
-  //OBTIENE LOS TURNOS POR ID DEL USUARIO
-  cuentasRouter.post("/:id/filtrar-turnos", async (req, res) => {
-    const { id } = req.params;
-    const { id_turno, cancha_id, fecha, hora_turno, estado_turno, tipo_deporte} = req.body;
-    const [datosTurnos] = await db.execute(
-      "SELECT id_cancha, fecha, hora_turno, estado_turno, tipo_deporte,ca.suelo  ,ca.precio ,c.id, cl.nombre, cl.direccion, ca.dimensiones from turnos INNER JOIN cuentas as c JOIN canchas as ca JOIN clubes as cl WHERE c.id = :id AND fecha = :fecha AND hora_turno = :hora_turno AND estado_turno = 1 AND ca.tipo_deporte = :tipo_deporte",
-      { id, fecha, hora_turno, tipo_deporte}
-    );
-
-    res.status(200).send(datosTurnos);
+//!CREAR USUARIO
+cuentasRouter.post(
+  "/",
+  body("userName").isLength({ min: 1, max: 25 }),
+  body("userPassword"),
+  body("nombre").isLength({ min: 1, max: 35 }),
+  body("apellido").isLength({ min: 1, max: 35 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+      return;
+    }
+    const { nombre, apellido, userName, userPassword } = req.body;
+    try {
+      const userPasswordHashed = await bcrypt.hash(userPassword, 8);
+      const [rows] = await db.execute(
+        "INSERT INTO usuarios (userName, userPassword, nombre, apellido) VALUES (:userName, :userPasswordHashed, :nombre, :apellido)",
+        { userName, userPasswordHashed, nombre, apellido }
+      );
+      res.status(201).send({ mensaje: "Cuenta creada." });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
   }
-  );
+);
 
+//!OBTENER TODOS LOS USUARIOS
+cuentasRouter.get("/", async (req, res) => {
+  const [rows] = await db.execute("SELECT * FROM usuarios");
 
-  //AGREGA UNA NUEVA CUENTA
-  cuentasRouter.post(
-    "/",
-    body("usuario").isAlphanumeric().isLength({ min: 1, max: 25 }),
-    body("password").isStrongPassword({
-      minLength: 4,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-    }),
-    body("personaId").isInt({ min: 1 }),
-    async (req, res) => {
-      const validacion = validationResult(req);
-      if (!validacion.isEmpty()) {
-        res.status(400).send({ errors: validacion.array() });
-        return;
-      }
-      const { usuario, password, personaId } = req.body;
-      const passwordHashed = await bcrypt.hash(password, 8);
-      const [rows] = await db.execute(
-        "INSERT INTO cuentas (usuario, password, persona_id) VALUES (:usuario, :password, :personaId)",
-        { usuario, password: passwordHashed, personaId }
-      );
-      res.status(201).send({ id: rows.insertId, usuario, personaId });
-    }
-  )
-
-  //OBTENER LOS DATOS DE TODAS LAS CUENTAS
-  cuentasRouter.get("/", async (req, res) => {
-      const [rows, fields] = await db.execute(
-        "SELECT id, usuario, persona_id as personaId FROM cuentas"
-      );
-      res.send(rows);
-  });
-
-  //OBTENER LOS DATOS POR ID
-  cuentasRouter.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    const [rows, fields] = await db.execute(
-      "SELECT id, usuario, persona_id as personaId FROM cuentas WHERE id = :id",
-      { id }
-    );
+  try {
     if (rows.length > 0) {
-      res.send(rows[0]);
-    } else {
-      res.status(404).send({ mensaje: "Cuenta no encontrada" });
-    }
-  });
-
-  //OBTIENE LOS DATOS DE LA PERSONA DE LA CUENTA
-  cuentasRouter.get("/:id/persona", async (req, res) => {
-    const { id } = req.params;
-    const [rows, fields] = await db.execute(
-      "SELECT p.id, p.apellido, p.nombre \
-      FROM personas p \
-      JOIN cuentas c ON p.id = c.persona_id \
-      WHERE c.id = :id",
-      { id }
-    );
-    if (rows.length > 0) {
-      res.send(rows[0]);
-    } else {
-      res.status(404).send({ mensaje: "Persona no encontrada" });
-    }
-  });
-
-  //ELIMINA LOS DATOS DE LA CUENTA
-  cuentasRouter.delete("/:id", param("id").isInt({ min: 1 }), async (req, res) => {
-    const { id } = req.params;
-    await db.execute("DELETE FROM cuentas WHERE id = :id", { id });
-    res.send("ok");
-  });
-
-  //OBTIENE LAS RESERVAS DE LA CUENTA
-  cuentasRouter.get(
-    "/:id/reservas",
-    param("id").isInt().isLength({ min: 1 }),
-    async (req, res) => {
-      const validacion = validationResult(req);
-      if (!validacion.isEmpty()) {
-        res.status(400).send({ errors: validacion.array() });
-      }
-      const { id } = req.params;
-      const [rows] = await db.execute(
-        "SELECT reservas.fecha, reservas.hora, reservas.estado_reserva, clubes.direccion FROM reservas INNER JOIN canchas INNER JOIN clubes ON canchas.club_id = clubes.id_club WHERE reservas.cuenta_id = :id",
-        {
-          id
-        }
-      );
       res.status(200).send(rows);
-    }
-  );
+    } else {
+      res.status(400).send({ mensaje: "No hay usuarios" });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
 
-  
-  cuentasRouter.get(
-  "/:id/personas",
+//!OBTENER USUARIO POR ID
+cuentasRouter.get(
+  "/:id",
   param("id").isInt().isLength({ min: 1 }),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { id } = req.params;
     const [rows] = await db.execute(
-      "SELECT cuentas.id,cuentas.usuario,personas.nombre,personas.apellido FROM cuentas INNER JOIN personas ON cuentas.persona_id = personas.id WHERE cuentas.id = 1;",
-      {
-        id,
-      }
+      "SELECT * FROM usuarios WHERE userId =:id",
+      { id }
     );
-    res.status(200).send(rows[0]);
-  }
+
+    try {
+      if (rows.length > 0) {
+        res.status(200).send(rows[0]);
+      } else {
+        res.status(400).send({ mensaje: "No se encontró el usuario." });
+      }
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
 );
 
+//!OBTENER USUARIO POR ID
 
+cuentasRouter.put(
+  "/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  body("userName").isLength({ min: 1, max: 25 }),
+  body("userPassword").isStrongPassword({
+    minLength: 4,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+  }),
+  body("nombre").isLength({ min: 1, max: 35 }),
+  body("apellido").isLength({ min: 1, max: 35 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+      return;
+    }
+    const { id } = req.params;
+    const { nombre, apellido, userName, userPassword } = req.body;
+    try {
+      const userPasswordHashed = await bcrypt.hash(userPassword, 8);
+      const [rows] = await db.execute(
+        "UPDATE usuarios SET userName=:userName, userPassword=:userPassword, nombre=:nombre, apellido=:apellido where userId=:id",
+        {
+          id: id,
+          userName: userName,
+          userPassword: userPasswordHashed,
+          nombre: nombre,
+          apellido: apellido,
+        }
+      );
+      
+      res.status(201).send({ mensaje: "Cuenta modificada." });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+);
 
+//!ELIMINAR USUARIO POR ID
+cuentasRouter.delete(
+  "/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+      return;
+    }
+    const { id } = req.params;
+    try {
+      const [rows] = await db.execute("DELETE FROM usuarios WHERE userId=:id", {
+        id: id,
+      });
+      if(rows.affectedRows === 0) {
+        res.status(400).send({ mensaje: "No se encontró el usuario." });
+      } else{ 
+        res.status(200).send({ mensaje: "Usuario eliminado." });
+      }
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+);

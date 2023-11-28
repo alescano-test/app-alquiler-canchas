@@ -1,10 +1,12 @@
-import { Hero } from "./componentes/Hero";
+import { Buscador } from "./componentes/Buscador";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./paginas/Home";
 import { Login } from "./paginas/Login";
-import ResultadoCanchas from "./paginas/ResultadoCanchas";
-import Registro from "./paginas/Registro";
+import { ResultadoCanchas } from "./paginas/ResultadoCanchas";
+import { Registro } from "./paginas/Registro";
 import { Reservas } from "./paginas/Reservas";
+import { NotFound } from "./paginas/NotFound";
+import { RequiredAuth } from "./contexto/RequireAuth";
 
 export default function App() {
   return (
@@ -14,12 +16,13 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />}>
-          <Route index element={<Hero />} />
+          <Route index element={<Buscador />} />
           <Route path="/login" element={<Login />} />
           <Route path="/resultadoCanchas" element={<ResultadoCanchas />} />
           <Route path="/registro" element={<Registro />} />
-            <Route path="/mis-reservas/:id" element={<Reservas />} />
+          <Route path="/mis-reservas/:id" element={<Reservas />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

@@ -7,15 +7,8 @@ export const RequiredAuth = ({ children }) => {
   const location = useLocation();
 
   if (!sesion) {
-    return (
-      <div>
-        <Navigate to="/login" state={{ from: location }} replace />
-        <Navigate to="/registro" state={{ from: location }} replace />
-      </div>
-      
-    )
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
-
   return children;
 };
 
@@ -34,9 +27,6 @@ export const Visible = ({ children }) => {
       </div>
       
     )
-        
-    
-    
   }
   return children;
 };

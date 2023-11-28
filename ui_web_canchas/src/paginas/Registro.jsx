@@ -1,36 +1,44 @@
 import { useAuthContext } from "../contexto/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { Boton } from "../componentes/Boton";
+import { MensajeError } from "../componentes/MensajeError";
 
-export default function Registro() {
-  const [usuario, setUsuario] = useState("");
-  const [password, setPassword] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const { login } = useAuthContext();
+export const Registro = () => {
+    
+  const { logueado, login } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState(false);
 
-  
-  const enviarInfoUsuario = async () => {
-    
-    const response = await axios.post("http://localhost:3000/personas/crear-persona-cuenta", {
-      usuario,
-      password,
+  const from = location.state?.from?.pathname || "/";
+
+  const onSubmit = (event) => {
+    const formData = new FormData(event.currentTarget);
+    const userName = formData.get("userName");
+    const userPassword = formData.get("userPassword");
+    const nombre = formData.get("nombre");
+    const apellido = formData.get("apellido");
+
+    logueado(
+      userName,
+      userPassword,
       nombre,
       apellido,
-    });
-    
-    login(
-      usuario,
-      password,
-      () => navigate("/"),
+      () => navigate(from, { replace: true }),
       () => setError(true)
     );
-    e.preventDefault();
 
+    if (!error) {
+      login(
+        userName,
+        userPassword,
+        () => navigate(from, { replace: true }),
+        () => setError(true)
+      );
+    }
+
+    event.preventDefault();
   };
 
   return (
@@ -45,50 +53,21 @@ export default function Registro() {
               Registrate para obtener beneficios!
             </p>
           </div>
-          <form
-            className="flex flex-col p-10 gap-3 font-base"
-            onSubmit={enviarInfoUsuario}
-          >
-           <input
-              className="input input-bordered"
-              type="text"
-              placeholder="Usuario"
-              name="usuario"
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-            />
-            <input
-              className="input input-bordered"
-              type="password"
-              placeholder="Contraseña"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              className="input input-bordered"
-              type="text"
-              placeholder="Nombre"
-              name="nombre"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-            />
-            <input
-              className="input input-bordered"
-              type="text"
-              placeholder="Apellido"
-              name="apellido"
-              value={apellido}
-              onChange={(e) => setApellido(e.target.value)}
-            />
-            
-            <div className="form-control m-auto">
-              <Boton type="submit" btnNombre="Registrate" />
-            </div>
-            
-          </form>
-          
-          
+          <div>
+            <form onSubmit={onSubmit} className="flex flex-col p-10 gap-3 font-base">
+              <input name="userName" type="text" className="input input-bordered" placeholder="Usuario" />
+              <input name="userPassword" type="password" className="input input-bordered" placeholder="Contraseña" />
+              <input name="nombre" type="text" className="input input-bordered" placeholder="Nombre" />
+              <input name="apellido" type="text" className="input input-bordered" placeholder="Apellido" />
+
+              {error && <MensajeError mensaje="Ups! No se pudo registrar el usuario" />}
+
+              <div className="form-control m-auto">
+                <Boton btnNombre="Registrar" type="submit" />
+              </div>
+              
+            </form>
+          </div>
         </div>
       </div>
     </>

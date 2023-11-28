@@ -34,7 +34,7 @@ export const Lista = ({encabezado1, encabezado2, encabezado3} ) => {
           <tbody>
             {reservas.map((reserva) => {
                 return (
-                    <tr className="text-blanco" key={reserva.id}>
+                    <tr key={reserva.id_reserva} className="text-blanco" >
                         <td className=""><BotonReservas /></td>
                         <td className="">{reserva.fecha}</td>
                         <td className="">{reserva.hora}</td>
