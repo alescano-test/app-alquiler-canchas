@@ -66,7 +66,7 @@ export const Turnos = () => {
       const response = await axios.post(
         "http://localhost:3000/turnos",
         {
-          cancha: canchaSeleccionada, // Aquí solo se envía el ID de la cancha
+          cancha: canchaSeleccionada,
           fecha: fecha,
           hora: hora,
           precio: precio,
@@ -245,4 +245,56 @@ export const Turnos = () => {
       </div>
     </div>
   );
+};
+
+
+
+const handleComprarBoleto = async () => {
+  try {
+    const responseAsiento = await axios.get(
+      `http://localhost:3000/asientos/${nuevoBoleto.asiento}/detalle`
+    );
+    const asientoDetalle = responseAsiento.data;
+
+    if (asientoDetalle.estado === "libre") {
+      const responseBoleto = await axios.post(
+        "http://localhost:3000/boletos",
+        {
+          idcolectivo: nuevoBoleto.idColectivo,
+          precio: nuevoBoleto.precio,
+          destino: nuevoBoleto.destino,
+          asiento: nuevoBoleto.asiento,
+        },
+        {
+          headers: { Authorization: `Bearer ${sesion.token}` },
+        }
+      );
+
+      setMensaje(`Boleto comprado: ${responseBoleto.data}`);
+
+      // Actualizar el estado del asiento a 'reservado' mediante la solicitud PUT
+      await axios.put(
+        `http://localhost:3000/asientos/${nuevoBoleto.asiento}`,
+        { estado: "reservado" }
+      );
+
+      setNuevoBoleto({
+        idColectivo: "",
+        precio: "",
+        destino: "",
+        asiento: "",
+      });
+      setAsientosSeleccionados([]);
+    } else {
+      setMensaje("El asiento no está libre. Por favor, elija otro.");
+      setModalTitle("Error en Comprar el Boleto"); // Cambiar el título del Modal en caso de error
+    }
+  } catch (error) {
+    console.error("Error al comprar boleto:", error);
+    setError("Error al comprar boleto. Inténtalo de nuevo más tarde.");
+    setModalTitle("Error en Comprar el Boleto"); // Cambiar el título del Modal en caso de error
+  }
+
+  // Mostrar el Modal después de comprar el boleto o en caso de error
+  setShowModal(true);
 };

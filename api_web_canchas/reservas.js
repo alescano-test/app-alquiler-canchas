@@ -69,6 +69,22 @@ reservasRouter.get("/", async (req, res) => {
   }
 });
 
+//! OBTENER TODAS LAS RESERVAS CON INFORMACIÓN DE CANCHA Y TURNO
+reservasRouter.get("/detalles/todos", async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      "SELECT reservas.reservaId, canchas.canchaId, canchas.tipo_deporte, canchas.cant_jugadores, clubes.nombre as nombre_club, turnos.fecha, turnos.hora, turnos.precio as precio_turno, reservas.estado FROM reservas INNER JOIN turnos ON reservas.turno = turnos.turnoId INNER JOIN canchas ON turnos.cancha = canchas.canchaId INNER JOIN clubes ON canchas.club = clubes.clubId"
+    );
+    if (rows.length > 0) {
+      res.status(200).send(rows);
+    } else {
+      res.status(400).send({ mensaje: "No hay reservas." });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 //! MODIFICAR UNA RESERVA
 reservasRouter.put(
   "/:id",
@@ -117,9 +133,12 @@ reservasRouter.delete(
     }
     const { id } = req.params;
     try {
-      const [rows] = await db.execute("DELETE FROM reservas WHERE reservaId=:id", {
-        id: id,
-      });
+      const [rows] = await db.execute(
+        "DELETE FROM reservas WHERE reservaId=:id",
+        {
+          id: id,
+        }
+      );
       if (rows.affectedRows === 0) {
         res.status(400).send({ mensaje: "Reserva no encontrada" });
       } else {

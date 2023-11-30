@@ -55,6 +55,33 @@ turnosRouter.get(
   }
 );
 
+//! OBTENER LOS TURNOS POR CANCHA
+turnosRouter.get(
+  "/turnosporcancha/:id",
+  param("id").isInt().isLength({ min: 1 }),
+  async (req, res) => {
+    const validacion = validationResult(req);
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errors: validacion.array() });
+      return;
+    }
+    const { id } = req.params;
+    try {
+      const [rows] = await db.execute(
+        "SELECT * FROM turnos WHERE cancha = :id",
+        { id }
+      );
+      if (rows.length === 0) {
+        res.status(404).send({ mensaje: "No se encontraron turnos para esta cancha." });
+      } else {
+        res.status(200).send(rows);
+      }
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+);
+
 //! OBTENER TODOS LOS TURNOS
 turnosRouter.get("/", async (req, res) => {
   try {
