@@ -16,7 +16,7 @@ export const Visible = ({ children }) => {
 
   if (!sesion) {
     return (
-      <div className="flex gap-4 mr-3">
+      <div className="flex gap-4 justify-end">
         <Link to="/login">
           |
           <button

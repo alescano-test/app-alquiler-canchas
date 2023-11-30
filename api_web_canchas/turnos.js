@@ -7,13 +7,14 @@ export const turnosRouter = express.Router();
 //! AGREGAR TURNO
 turnosRouter.post(
   "/",
-  body("cancha").isInt().isLength({ min: 1 }),
+  body("cancha").isLength({ min: 1 }),
   body("precio").isNumeric(),
   body("estado"),
   async (req, res) => {
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { cancha, fecha, hora, precio, estado } = req.body;
     try {
@@ -35,6 +36,7 @@ turnosRouter.get(
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { id } = req.params;
     try {

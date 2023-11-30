@@ -116,3 +116,24 @@ clubesRouter.get("/", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+
+//BUSCA LAS CANCHAS POR EL ID CLUB
+clubesRouter.get("/:id/canchas", param("id").isInt({ min: 1 }), async (req, res) => {
+  const validacion = validationResult(req);
+  if (!validacion.isEmpty()) {
+    res.status(400).send({ errors: validacion.array() });
+  }
+  const { id } = req.params;
+  try {
+    const [rows] = await db.execute("SELECT ca.canchaId, ca.tipo_deporte, ca.cant_jugadores, ca.precio, cl.nombre FROM canchas ca JOIN clubes cl ON ca.club = cl.clubId WHERE cl.clubId = :id;", {
+      id,
+    });
+    if (rows.length > 0) {
+      res.status(200).send(rows);
+    } else {
+      res.status(404).send({ mensaje: "Club no encontrado." });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});

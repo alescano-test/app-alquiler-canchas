@@ -15,6 +15,7 @@ canchasRouter.post(
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { club, tipo_deporte, cant_jugadores, precio } = req.body;
     try {
@@ -42,6 +43,7 @@ canchasRouter.get(
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { id } = req.params;
     try {
@@ -50,7 +52,7 @@ canchasRouter.get(
         { id }
       );
       if (rows.length === 0) {
-        res.status(400).send({ mensaje: "No se encontró la cancha." });
+        res.status(404).send({ mensaje: "No se encontró la cancha." });
       } else {
         res.status(200).send(rows[0]);
       }
@@ -82,6 +84,7 @@ canchasRouter.put(
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { id } = req.params;
     const { club, tipo_deporte, cant_jugadores, precio } = req.body;
@@ -97,7 +100,7 @@ canchasRouter.put(
         }
       );
       if(rows.affectedRows === 0) {
-        res.status(400).send({ mensaje: "No se encontró la cancha." });
+        res.status(404).send({ mensaje: "No se encontró la cancha." });
       } else {
         res.status(200).send({ mensaje: "Cancha modificada" });
       }
@@ -115,16 +118,17 @@ canchasRouter.delete(
     const validacion = validationResult(req);
     if (!validacion.isEmpty()) {
       res.status(400).send({ errors: validacion.array() });
+      return;
     }
     const { id } = req.params;
 
     try {
       const [rows] = await db.execute(
-        "delete from canchas where id_cancha= :id",
+        "delete from canchas where canchaId= :id",
         { id }
       );
       if (rows.affectedRows === 0) {
-        res.status(400).send({ mensaje: "No se encontró la cancha." });
+        res.status(404).send({ mensaje: "No se encontró la cancha." });
       } else {
         res.status(200).send({ mensaje: "Cancha eliminada" });
       }

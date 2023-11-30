@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Cancha } from "../componentes/Cancha";
+import { Cancha } from "./Cancha";
 import axios from "axios";
 import { useAuthContext } from "../contexto/AuthContext";
 
